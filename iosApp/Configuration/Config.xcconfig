@@ -1,0 +1,7 @@
+TEAM_ID=
+
+PRODUCT_NAME=Heirloom Recipes
+PRODUCT_BUNDLE_IDENTIFIER=com.bogadevelopment.heirloomrecipes.HeirloomRecipes$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
