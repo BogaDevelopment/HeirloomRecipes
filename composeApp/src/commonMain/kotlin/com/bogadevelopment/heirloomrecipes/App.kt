@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.bogadevelopment.heirloomrecipes.login.ui.LoginScreen
+import com.bogadevelopment.heirloomrecipes.reciepes.ui.RecipesView
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -22,5 +23,6 @@ import heirloomrecipes.composeapp.generated.resources.compose_multiplatform
 @Composable
 @Preview
 fun App() {
-    LoginScreen()
+    //LoginScreen()
+    RecipesView()
 }
