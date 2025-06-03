@@ -23,14 +23,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
+
+    val state = viewModel.state
+    val message = when{
+        state.loggedIn -> "Success"
+        state.error != null -> state.error
+        else -> null
+    }
+
     Box(
         Modifier.fillMaxSize().background(Color.Blue).padding(8.dp)
     ) {
         Header()
-        Body(Modifier.align(alignment = Alignment.Center))
+        Body(Modifier.align(alignment = Alignment.Center), viewModel, state)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -47,7 +56,11 @@ fun Footer(modifier: Modifier){
 }
 
 @Composable
-fun Body(modifier: Modifier) {
+fun Body(
+    modifier: Modifier,
+    viewModel: LoginViewModel,
+    state: LoginViewModel.UiState
+) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
@@ -55,24 +68,32 @@ fun Body(modifier: Modifier) {
         VerticalSpacer(40)
         CustomTittle("Welcome", 50)
         VerticalSpacer(60)
-        Field(email, { email = it }, "Email")
+        Field(email, { email = it }, "Email", state.error != null)
         VerticalSpacer(10)
-        Field(password, { password = it }, "Password")
+        Field(password, { password = it }, "Password", state.error != null)
         VerticalSpacer(5)
         CustomText("Forgot password ?", 15, Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, modifier)
+        GeneralButton("Log in", 20, modifier,email,password){ viewModel.login(email, password)}
     }
 }
 
 // General components
 
 @Composable
-fun GeneralButton(text: String, shape: Int, modifier: Modifier) {
+fun GeneralButton(
+    text: String,
+    shape: Int,
+    modifier: Modifier,
+    email : String,
+    password : String,
+    isLogin: () -> Unit
+) {
     Button(
-        onClick = {},
+        onClick = { isLogin() },
         shape = RoundedCornerShape(shape.dp),
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        enabled = email.isNotEmpty() && password.isNotEmpty()
     ) {
         Text(text = text, fontSize = 20.sp)
     }
@@ -99,12 +120,13 @@ fun CustomText(name: String, size: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Field(text: String, onTextChanged: (String) -> Unit, ph: String) {
+fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Boolean) {
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = text,
         onValueChange = { onTextChanged(it) },
-        placeholder = { CustomText(ph, 20) }
+        placeholder = { CustomText(ph, 20) },
+        isError = isError
     )
 }
 
