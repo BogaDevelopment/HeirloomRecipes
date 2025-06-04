@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,13 +33,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+object LoginScreen
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(
+    onLoggedIn : () -> Unit,
+    viewModel: LoginViewModel = viewModel()) {
+
+    LaunchedEffect(viewModel.state.loggedIn){
+        if(viewModel.state.loggedIn) onLoggedIn()
+    }
 
     val state = viewModel.state
     val message = when{
-        state.loggedIn -> "Success"
         state.error != null -> state.error
         else -> null
     }
@@ -136,7 +147,7 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
         onValueChange = { onTextChanged(it) },
         placeholder = { CustomText(ph, 20) },
         isError = isError,
-        visualTransformation = if (isPassVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = if (isPassVisible || type != "password") VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             if(type == "password") {
                 IconButton(onClick = { isPassVisible  = !isPassVisible}) {

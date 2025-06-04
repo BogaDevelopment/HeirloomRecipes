@@ -22,7 +22,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun loginEnable (user : String, pass : String) : Boolean {
+    private fun loginEnable (user : String, pass : String) : Boolean {
         return !user.contains("@") && !user.contains(".com") && pass.length >= 8 && user.isNotEmpty() && pass.isNotEmpty()
     }
 

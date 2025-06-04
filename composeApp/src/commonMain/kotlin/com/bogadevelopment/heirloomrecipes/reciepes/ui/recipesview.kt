@@ -17,10 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
+import kotlinx.serialization.Serializable
 
+
+@Serializable
+object RecipesScreen
 
 @Composable
-fun RecipesView() {
+fun RecipesScreen() {
     Scaffold(
         topBar = { ToolBar() },
         content ={Content()},
