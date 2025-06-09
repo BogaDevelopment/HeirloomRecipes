@@ -13,7 +13,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = LoginScreen) {
+    NavHost(navController, startDestination = RecipesScreen) {
+
         composable<LoginScreen> {
             LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)})
         }

@@ -3,7 +3,7 @@
 package com.bogadevelopment.heirloomrecipes.reciepes.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -16,6 +16,8 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bogadevelopment.heirloomrecipes.dialogs.NewRecipeDialog
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
 import kotlinx.serialization.Serializable
 
@@ -24,11 +26,12 @@ import kotlinx.serialization.Serializable
 object RecipesScreen
 
 @Composable
-fun RecipesScreen() {
+fun RecipesScreen(viewModel: RecipesViewModel = viewModel()){
+
     Scaffold(
         topBar = { ToolBar() },
-        content ={Content()},
-        floatingActionButton = {FAB()}
+        content ={Content(viewModel)},
+        floatingActionButton = {FAB(viewModel)}
     )
 }
 
@@ -48,15 +51,15 @@ fun ToolBar(){
 }
 
 @Composable
-fun FAB() {
-    FloatingActionButton(onClick = {} ) {
+fun FAB(viewModel: RecipesViewModel) {
+    FloatingActionButton(onClick = { viewModel.openDialog() } ) {
         Icon(Icons.Default.Add, contentDescription = "FAB")
     }
 }
 
 @Composable
-fun Content() {
-    Column(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
-
+fun Content(viewModel: RecipesViewModel) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
+        NewRecipeDialog(viewModel.show,{viewModel.onDialogDismiss()}, {viewModel.onDialogConfirm()})
     }
 }
