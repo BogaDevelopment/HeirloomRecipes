@@ -60,6 +60,6 @@ fun FAB(viewModel: RecipesViewModel) {
 @Composable
 fun Content(viewModel: RecipesViewModel) {
     Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
-        NewRecipeDialog(viewModel.show,{viewModel.onDialogDismiss()}, {viewModel.onDialogConfirm()})
+        NewRecipeDialog(viewModel.show,viewModel.text,{viewModel.text = it} ,{viewModel.onDialogDismiss()}, {viewModel.onDialogConfirm()})
     }
 }

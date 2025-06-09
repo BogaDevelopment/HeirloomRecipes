@@ -9,12 +9,15 @@ class RecipesViewModel : ViewModel(){
 
     var show by mutableStateOf(false)
         private set
+    var text by mutableStateOf("")
+
 
     fun onDialogConfirm(){
 
     }
 
     fun onDialogDismiss(){
+        text = ""
         show = false
     }
 

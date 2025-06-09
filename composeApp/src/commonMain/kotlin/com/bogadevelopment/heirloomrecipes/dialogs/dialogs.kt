@@ -10,10 +10,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,9 +19,8 @@ import com.bogadevelopment.heirloomrecipes.login.ui.CustomTittle
 import com.bogadevelopment.heirloomrecipes.login.ui.VerticalSpacer
 
 @Composable
-fun NewRecipeDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+fun NewRecipeDialog(show: Boolean, text : String, onTextChanged : (String) -> Unit, onDismiss: () -> Unit, onConfirm: () -> Unit) {
 
-    var text by rememberSaveable { mutableStateOf("") }
 
     if (show) {
         Dialog(onDismissRequest = { onDismiss() }) {
@@ -33,11 +28,11 @@ fun NewRecipeDialog(show: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit)
                 VerticalSpacer(35)
                 CustomTittle("New Recipe", 34)
                 VerticalSpacer(30)
-                CustomField(text, "Add tittle", {text = it})
+                CustomField(text, "Add tittle", onTextChanged)
                 VerticalSpacer(30)
                 Row(Modifier.fillMaxWidth().padding(bottom = 35.dp)) {
                     CustomButton("Cancel", 15, Modifier.weight(0.5f), "left") { onDismiss() }
-                    CustomButton("Add", 15, Modifier.weight(0.5f), "right") { onDismiss() }
+                    CustomButton("Add", 15, Modifier.weight(0.5f), "right") { onConfirm() }
                 }
             }
         }
@@ -59,12 +54,12 @@ fun CustomButton(name: String, textSize: Int, modifier: Modifier = Modifier, lad
 }
 
 @Composable
-fun CustomField(name: String, ph : String,  onTextChanged : (String) -> Unit) {
+fun CustomField(name: String, label : String,  onTextChanged : (String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
         value = name,
         shape = RoundedCornerShape(20),
         onValueChange = { onTextChanged(it) },
-        placeholder = { CustomText(ph, 20) },
+        label = { CustomText(label, 15) },
     )
 }
