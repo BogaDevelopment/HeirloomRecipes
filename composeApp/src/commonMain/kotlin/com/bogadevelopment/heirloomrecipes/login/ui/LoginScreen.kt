@@ -4,10 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -15,6 +20,9 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -27,12 +35,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bogadevelopment.heirloomrecipes.designs.CmpTheme
 import kotlinx.serialization.Serializable
 
 
@@ -55,10 +66,10 @@ fun LoginScreen(
     }
 
     Box(
-        Modifier.fillMaxSize().background(Color.Blue).padding(8.dp)
+        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
     ) {
         Header()
-        Body(Modifier.align(alignment = Alignment.Center), viewModel, state)
+        Body(Modifier.align(Alignment.Center).offset(y = (-30).dp).padding(horizontal = 20.dp), viewModel, state)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -71,7 +82,7 @@ fun Header() {
 
 @Composable
 fun Footer(modifier: Modifier){
-    CustomText("@Bogadevelopment",20, modifier.padding(bottom = 20.dp))
+    CustomTittle("@Bogadevelopment",15, MaterialTheme.colorScheme.surfaceVariant, modifier.padding(bottom = 10.dp))
 }
 
 @Composable
@@ -85,15 +96,15 @@ fun Body(
 
     Column(modifier = modifier) {
         VerticalSpacer(40)
-        CustomTittle("Welcome", 50)
+        CustomTittle("Welcome", 50, MaterialTheme.colorScheme.onBackground)
         VerticalSpacer(60)
         Field(email, { email = it }, "Email", state.error != null, "email")
         VerticalSpacer(10)
         Field(password, { password = it }, "Password", state.error != null,"password")
         VerticalSpacer(5)
-        CustomText("Forgot password ?", 15, Modifier.align(Alignment.End))
+        CustomText("Forgot password ?", 15,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, modifier,email,password){ viewModel.login(email, password)}
+        GeneralButton("Log in", 20, Modifier,email,password){ viewModel.login(email, password)}
     }
 }
 
@@ -119,34 +130,37 @@ fun GeneralButton(
 }
 
 @Composable
-fun CustomTittle(name: String, size: Int) {
+fun CustomTittle(name: String, size: Int, color : Color, modifier: Modifier = Modifier) {
     Text(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         text = name,
         fontSize = size.sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = color,
     )
 }
 
 @Composable
-fun CustomText(name: String, size: Int, modifier: Modifier = Modifier) {
+fun CustomText(name: String, size: Int, color : Color, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = name,
         fontSize = size.sp,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
+        color = color
     )
 }
 
 @Composable
 fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Boolean, type : String) {
     var isPassVisible by remember { mutableStateOf(false) }
-    TextField(
+    OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = text,
         onValueChange = { onTextChanged(it) },
-        placeholder = { CustomText(ph, 20) },
+        label = { CustomText(ph, 15, MaterialTheme.colorScheme.onBackground) },
         isError = isError,
+        shape = RoundedCornerShape(20),
         visualTransformation = if (isPassVisible || type != "password") VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             if(type == "password") {
@@ -157,7 +171,11 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
                     )
                 }
             }
-        }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+        )
     )
 }
 

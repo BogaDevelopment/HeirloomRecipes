@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -31,7 +32,7 @@ fun RecipesScreen(viewModel: RecipesViewModel = viewModel()){
     Scaffold(
         topBar = { ToolBar() },
         content ={Content(viewModel)},
-        floatingActionButton = {FAB(viewModel)}
+        floatingActionButton = {FAB(viewModel)},
     )
 }
 
@@ -39,9 +40,9 @@ fun RecipesScreen(viewModel: RecipesViewModel = viewModel()){
 @Composable
 fun ToolBar(){
     TopAppBar(
-        title = {CustomText("Heirloom Recipes", 25)},
+        title = {CustomText("Heirloom Recipes", 25, MaterialTheme.colorScheme.onBackground)},
         colors = TopAppBarColors(
-            containerColor = Color.Gray,
+            containerColor = MaterialTheme.colorScheme.secondary,
             scrolledContainerColor = Color.Yellow,
             navigationIconContentColor = Color.Cyan,
             titleContentColor = Color.White,
@@ -52,14 +53,14 @@ fun ToolBar(){
 
 @Composable
 fun FAB(viewModel: RecipesViewModel) {
-    FloatingActionButton(onClick = { viewModel.openDialog() } ) {
+    FloatingActionButton(onClick = { viewModel.openDialog() }, containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onBackground) {
         Icon(Icons.Default.Add, contentDescription = "FAB")
     }
 }
 
 @Composable
 fun Content(viewModel: RecipesViewModel) {
-    Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         NewRecipeDialog(viewModel.show,viewModel.text,{viewModel.text = it} ,{viewModel.onDialogDismiss()}, {viewModel.onDialogConfirm()})
     }
 }
