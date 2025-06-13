@@ -40,7 +40,7 @@ fun RecipesScreen(viewModel: RecipesViewModel = viewModel()){
 @Composable
 fun ToolBar(){
     TopAppBar(
-        title = {CustomText("Heirloom Recipes", 25, MaterialTheme.colorScheme.onBackground)},
+        title = {CustomText("Heirloom Recipes", MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground)},
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             scrolledContainerColor = Color.Yellow,

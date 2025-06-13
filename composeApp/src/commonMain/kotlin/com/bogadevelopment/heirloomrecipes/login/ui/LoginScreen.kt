@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -24,7 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,14 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bogadevelopment.heirloomrecipes.designs.CmpTheme
 import kotlinx.serialization.Serializable
 
 
@@ -82,7 +78,7 @@ fun Header() {
 
 @Composable
 fun Footer(modifier: Modifier){
-    CustomTittle("@Bogadevelopment",15, MaterialTheme.colorScheme.surfaceVariant, modifier.padding(bottom = 10.dp))
+    CustomTittle("@Bogadevelopment",MaterialTheme.typography.titleSmall, MaterialTheme.colorScheme.surfaceVariant, modifier.padding(bottom = 10.dp))
 }
 
 @Composable
@@ -96,13 +92,13 @@ fun Body(
 
     Column(modifier = modifier) {
         VerticalSpacer(40)
-        CustomTittle("Welcome", 50, MaterialTheme.colorScheme.onBackground)
+        CustomTittle("Welcome", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
         VerticalSpacer(60)
         Field(email, { email = it }, "Email", state.error != null, "email")
         VerticalSpacer(10)
         Field(password, { password = it }, "Password", state.error != null,"password")
         VerticalSpacer(5)
-        CustomText("Forgot password ?", 15,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
+        CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
         GeneralButton("Log in", 20, Modifier,email,password){ viewModel.login(email, password)}
     }
@@ -130,22 +126,22 @@ fun GeneralButton(
 }
 
 @Composable
-fun CustomTittle(name: String, size: Int, color : Color, modifier: Modifier = Modifier) {
+fun CustomTittle(name: String, style: TextStyle, color: Color, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier.fillMaxWidth(),
         text = name,
-        fontSize = size.sp,
+        style = style,
         textAlign = TextAlign.Center,
         color = color,
     )
 }
 
 @Composable
-fun CustomText(name: String, size: Int, color : Color, modifier: Modifier = Modifier) {
+fun CustomText(name: String, style: TextStyle, color : Color, modifier: Modifier = Modifier) {
     Text(
         modifier = modifier,
         text = name,
-        fontSize = size.sp,
+        style = style,
         textAlign = TextAlign.Start,
         color = color
     )
@@ -158,7 +154,7 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
         modifier = Modifier.fillMaxWidth(),
         value = text,
         onValueChange = { onTextChanged(it) },
-        label = { CustomText(ph, 15, MaterialTheme.colorScheme.onBackground) },
+        label = { CustomText(ph, MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground) },
         isError = isError,
         shape = RoundedCornerShape(20),
         visualTransformation = if (isPassVisible || type != "password") VisualTransformation.None else PasswordVisualTransformation(),

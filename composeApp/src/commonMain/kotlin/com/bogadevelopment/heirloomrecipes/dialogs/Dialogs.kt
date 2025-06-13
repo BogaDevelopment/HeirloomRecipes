@@ -1,6 +1,5 @@
 package com.bogadevelopment.heirloomrecipes.dialogs
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,7 +43,7 @@ fun NewRecipeDialog(
                 )
             ) {
                 VerticalSpacer(35)
-                CustomTittle("New Recipe", 28, MaterialTheme.colorScheme.onBackground)
+                CustomTittle("New Recipe", MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground)
                 VerticalSpacer(30)
                 CustomField(text, "Add tittle", onTextChanged)
                 VerticalSpacer(30)
@@ -87,6 +86,6 @@ fun CustomField(name: String, label: String, onTextChanged: (String) -> Unit) {
         value = name,
         shape = RoundedCornerShape(20),
         onValueChange = { onTextChanged(it) },
-        label = { CustomText(label, 15, MaterialTheme.colorScheme.onBackground) },
+        label = { CustomText(label, MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground) },
     )
 }
