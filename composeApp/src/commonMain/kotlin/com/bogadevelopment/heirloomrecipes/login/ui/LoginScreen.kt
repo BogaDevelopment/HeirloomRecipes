@@ -100,7 +100,7 @@ fun Body(
         VerticalSpacer(5)
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, Modifier,email,password){ viewModel.login(email, password)}
+        GeneralButton("Log in", 20, Modifier,email,password,{ viewModel.login(email, password)},{viewModel.loginEnable(email, password)})
     }
 }
 
@@ -113,13 +113,14 @@ fun GeneralButton(
     modifier: Modifier,
     email : String,
     password : String,
-    isLogin: () -> Unit
+    isLogin: () -> Unit,
+    isValid: () -> Boolean
 ) {
     Button(
         onClick = { isLogin() },
         shape = RoundedCornerShape(shape.dp),
         modifier = modifier.fillMaxWidth(),
-        enabled = email.isNotEmpty() && password.isNotEmpty()
+        enabled = isValid()
     ) {
         Text(text = text, fontSize = 20.sp)
     }

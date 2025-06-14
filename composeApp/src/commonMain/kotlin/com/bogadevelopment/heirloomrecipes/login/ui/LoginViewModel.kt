@@ -17,13 +17,13 @@ class LoginViewModel : ViewModel() {
 
     fun login(user : String, password : String){
         state = when{
-            loginEnable(user, password) -> UiState(false, "Invalid")
-            else -> UiState(true)
+            loginEnable(user, password) -> UiState(true)
+            else -> UiState(false, "Error")
         }
     }
 
-    private fun loginEnable (user : String, pass : String) : Boolean {
-        return !user.contains("@") && !user.contains(".com") && pass.length >= 8 && user.isNotEmpty() && pass.isNotEmpty()
+    fun loginEnable (user : String, pass : String) : Boolean {
+        return user.contains("@") && user.contains(".com") && pass.length >= 8 && user.isNotEmpty() && pass.isNotEmpty()
     }
 
 }
