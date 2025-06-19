@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bogadevelopment.heirloomrecipes.designs.CmpTheme
 import com.bogadevelopment.heirloomrecipes.login.ui.LoginScreen
 import com.bogadevelopment.heirloomrecipes.reciepes.ui.RecipesScreen
+import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.themes.CustomTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -18,12 +19,13 @@ fun App() {
 
     CustomTheme {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = LoginScreen) {
+        NavHost(navController, startDestination = RecipeScreen) {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)})
             }
             composable<RecipesScreen> { RecipesScreen() }
+            composable<RecipeScreen> { RecipeScreen() }
         }
     }
 

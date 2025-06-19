@@ -19,7 +19,9 @@ import org.jetbrains.compose.resources.Font
 
 
 val lightColorScheme = lightColorScheme(
-    background = Color(0xFF004453)
+    surfaceVariant = Color(0x40FFFFFF),     // Tags
+    background = Color(0xFF004453),        // Backgrounds
+    onBackground = Color(0xFFFFFFFF),      // Tittles
 )
 
 val darkColorScheme = darkColorScheme(
@@ -29,6 +31,7 @@ val darkColorScheme = darkColorScheme(
     surfaceVariant = Color(0x40FFFFFF),     // Tags
     background = Color(0xFF004453),        // Backgrounds
     onBackground = Color(0xFFFFFFFF),      // Tittles
+    outlineVariant = Color(0xFFFFFF),       //Transparent
 )
 
 
