@@ -44,19 +44,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
-import com.bogadevelopment.heirloomrecipes.login.ui.CustomTittle
 import kotlinx.serialization.Serializable
 
 @Serializable
-object RecipeScreen
+data class RecipeScreen(val id : Int)
 
 @Composable
-fun RecipeScreen(viewModel: RecipeViewModel = viewModel()) {
+fun RecipeScreen(viewModel: RecipeViewModel) {
     Scaffold(
-        topBar = { ToolBar("Hola") },
+        topBar = { ToolBar(viewModel.state?.tittle ?: "Sin Titulo") },
     ) { innerPadding ->
         Content(viewModel, innerPadding)
     }

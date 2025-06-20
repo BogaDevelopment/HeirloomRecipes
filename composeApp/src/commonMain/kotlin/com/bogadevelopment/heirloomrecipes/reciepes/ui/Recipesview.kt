@@ -3,17 +3,15 @@
 package com.bogadevelopment.heirloomrecipes.reciepes.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.dialogs.NewRecipeDialog
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
+import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipesCard
 import kotlinx.serialization.Serializable
 
 
@@ -43,13 +42,13 @@ import kotlinx.serialization.Serializable
 object RecipesScreen
 
 @Composable
-fun RecipesScreen(viewModel: RecipesViewModel = viewModel()){
+fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewModel = viewModel()){
 
     Scaffold(
         topBar = { ToolBar() },
         floatingActionButton = {FAB(viewModel)},
     ){ innerPadding ->
-        Content(viewModel, innerPadding)
+        Content(viewModel, innerPadding, onItemClick)
     }
 }
 
@@ -76,22 +75,30 @@ fun FAB(viewModel: RecipesViewModel) {
 }
 
 @Composable
-fun Content(viewModel: RecipesViewModel, innerPadding: PaddingValues) {
+fun Content(
+    viewModel: RecipesViewModel,
+    innerPadding: PaddingValues,
+    onItemClick: (RecipesCard) -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         NewRecipeDialog(viewModel.show,viewModel.text,{viewModel.text = it} ,{viewModel.onDialogDismiss()}, {viewModel.onDialogConfirm()})
-        RecipesList(innerPadding, viewModel)
+        RecipesList(innerPadding, viewModel, onItemClick)
     }
 }
 
 @Composable
-fun RecipesList(innerPadding: PaddingValues, viewModel: RecipesViewModel) {
+fun RecipesList(
+    innerPadding: PaddingValues,
+    viewModel: RecipesViewModel,
+    onItemClick: (RecipesCard) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     ){
-        itemsIndexed(viewModel.recipe, key = {_, item -> item.id}){ index, item ->
-            Card(modifier = Modifier.fillMaxWidth().height(70.dp).padding(horizontal = 10.dp).padding(top = 5.dp), elevation = CardDefaults.cardElevation(8.dp)){
+        itemsIndexed(viewModel.recipes, key = {_, item -> item.id}){ index, item ->
+            Card(modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 10.dp).padding(top = 5.dp).clickable{onItemClick(item)}, elevation = CardDefaults.cardElevation(8.dp)){
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary), contentAlignment = Alignment.CenterStart){
                     CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 10.dp).wrapContentWidth())
                     IconButton(onClick = {}, modifier = Modifier.align(Alignment.CenterEnd)){

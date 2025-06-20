@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipesCard
 
 class RecipesViewModel : ViewModel(){
@@ -13,9 +14,7 @@ class RecipesViewModel : ViewModel(){
         private set
     var text by mutableStateOf("")
 
-    private val _recipes = mutableStateListOf<RecipesCard>()
-    val recipe : List<RecipesCard> get() = _recipes
-
+    val recipes : List<RecipesCard> get() = RecipeRepository.recipes
 
     fun onDialogConfirm(){
         addRecipe()
@@ -32,10 +31,13 @@ class RecipesViewModel : ViewModel(){
 
     fun addRecipe(){
         if(text.isNotBlank()){
-            val newId = (_recipes.maxOfOrNull{ it.id} ?: 0) + 1
-            _recipes.add(RecipesCard(id = newId, tittle = text))
+            RecipeRepository.addRecipe(text)
         }
         onDialogDismiss()
+    }
+
+    fun getRecipeById(id : Int){
+        RecipeRepository.getById(id)
     }
 
 }
