@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
+import com.bogadevelopment.heirloomrecipes.reciepes.ui.ToolBar
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -51,26 +52,6 @@ fun RecipeScreen(viewModel: RecipeViewModel) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ToolBar(tittle: String) {
-    TopAppBar(
-        title = {
-            CustomText(
-                tittle,
-                MaterialTheme.typography.headlineMedium,
-                MaterialTheme.colorScheme.onBackground
-            )
-        },
-        colors = TopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            scrolledContainerColor = Color.Yellow,
-            navigationIconContentColor = Color.Cyan,
-            titleContentColor = Color.White,
-            actionIconContentColor = Color.Black
-        )
-    )
-}
 
 @Composable
 fun Content(innerPadding: PaddingValues) {

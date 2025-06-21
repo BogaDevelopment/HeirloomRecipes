@@ -45,7 +45,7 @@ object RecipesScreen
 fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewModel = viewModel()){
 
     Scaffold(
-        topBar = { ToolBar() },
+        topBar = { ToolBar("Heirloom Recipes") },
         floatingActionButton = {FAB(viewModel)},
     ){ innerPadding ->
         Content(viewModel, innerPadding, onItemClick)
@@ -54,9 +54,9 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewMod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToolBar(){
+fun ToolBar(text : String){
     TopAppBar(
-        title = {CustomText("Heirloom Recipes", MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground)},
+        title = {CustomText(text, MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground)},
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             scrolledContainerColor = Color.Yellow,
