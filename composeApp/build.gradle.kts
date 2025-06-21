@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -47,6 +48,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.navigation.compose)
             implementation(projects.shared)
+
+            implementation(libs.firebase.auth)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

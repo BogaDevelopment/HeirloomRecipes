@@ -12,6 +12,9 @@ import com.bogadevelopment.heirloomrecipes.reciepes.ui.RecipesScreen
 import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeViewModel
 import com.bogadevelopment.heirloomrecipes.themes.CustomTheme
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.auth
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -20,9 +23,22 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
 
+    val scope = rememberCoroutineScope()
+    val auth = remember {Firebase.auth}
+    var firebaseUser : FirebaseUser? by remember { mutableStateOf(null) }
+
+    var startScreen : Any
+
+    if(firebaseUser == null){
+        startScreen = LoginScreen
+    }else{
+        startScreen = RecipesScreen
+    }
+
+
     CustomTheme {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = RecipesScreen) {
+        NavHost(navController, startDestination = startScreen) {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)})

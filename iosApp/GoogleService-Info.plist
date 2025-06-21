@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyC06gI_eIktZC4TGoVLlX6BkXeDBJ1TIcA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>980789509807</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.bogadevelopment.heirloomrecipes</string>
+	<key>PROJECT_ID</key>
+	<string>heirloomrecipes-dbec4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>heirloomrecipes-dbec4.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:980789509807:ios:721d5316dd5f19dd661e5a</string>
+</dict>
+</plist>

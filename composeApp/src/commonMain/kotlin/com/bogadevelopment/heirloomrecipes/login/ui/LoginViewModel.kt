@@ -4,6 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
@@ -16,9 +20,19 @@ class LoginViewModel : ViewModel() {
     )
 
     fun login(user : String, password : String){
-        state = when{
-            loginEnable(user, password) -> UiState(true)
-            else -> UiState(false, "Error")
+
+        if(!loginEnable(user, password)) {
+            state = UiState(false, "Email or password incorrect")
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                Firebase.auth.signInWithEmailAndPassword(user, password)
+                state = UiState(loggedIn = true)
+            } catch (e: Exception) {
+                state = UiState(false, "e.message")
+            }
         }
     }
 
