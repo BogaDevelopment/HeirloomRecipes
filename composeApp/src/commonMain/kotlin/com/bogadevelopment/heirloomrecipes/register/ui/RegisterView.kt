@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,6 +32,10 @@ object RegisterScreen
 fun RegisterScreen(onRegister : () -> Unit, viewModel: RegisterViewModel = viewModel()){
 
     val state = viewModel.state
+
+    LaunchedEffect(viewModel.state.registered){
+        if(viewModel.state.registered) onRegister()
+    }
 
     Scaffold(
         topBar = { ToolBar("Heirloom Recipes") },

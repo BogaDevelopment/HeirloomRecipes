@@ -51,12 +51,11 @@ fun LoginScreen(
     onLoggedIn : () -> Unit,
     viewModel: LoginViewModel = viewModel()) {
 
+    val state = viewModel.state
+
     LaunchedEffect(viewModel.state.loggedIn){
         if(viewModel.state.loggedIn) onLoggedIn()
     }
-
-    val state = viewModel.state
-
 
     Box(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
@@ -153,6 +152,7 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
         label = { CustomText(ph, MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground) },
         isError = isError,
         shape = RoundedCornerShape(20),
+        maxLines = 1,
         visualTransformation = if (isPassVisible || type != "password") VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
             if(type == "password") {

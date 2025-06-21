@@ -4,7 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.bogadevelopment.heirloomrecipes.login.ui.LoginViewModel.UiState
+import androidx.lifecycle.viewModelScope
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
 
@@ -25,6 +28,16 @@ class RegisterViewModel : ViewModel() {
             )
             return
         }
+
+        viewModelScope.launch {
+            try {
+                Firebase.auth.createUserWithEmailAndPassword(user, password)
+                state = UiState(registered = true)
+            } catch (e: Exception) {
+                state = UiState(false, e.message)
+            }
+        }
+
     }
 
     fun registerEnable (user : String, pass : String, pass2 : String) : Boolean {

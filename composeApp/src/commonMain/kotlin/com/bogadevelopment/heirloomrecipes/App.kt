@@ -23,11 +23,11 @@ fun App() {
 
     val firebaseUser : FirebaseUser? by remember { mutableStateOf(null) }
 
-    //val startScreen : Any = if (firebaseUser == null) LoginScreen else RecipesScreen
+    val startScreen : Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
     CustomTheme {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = RegisterScreen) {
+        NavHost(navController, startDestination = startScreen) {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)})
