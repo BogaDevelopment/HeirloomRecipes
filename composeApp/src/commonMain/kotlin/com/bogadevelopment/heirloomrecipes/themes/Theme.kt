@@ -8,7 +8,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -43,7 +42,7 @@ fun CustomTheme(content : @Composable () -> Unit){
     val isDarkTheme = isSystemInDarkTheme()
     val colorScheme = if(isDarkTheme) darkColorScheme else lightColorScheme
 
-    val TinosFontFamily = FontFamily(
+    val tinosFontFamily = FontFamily(
         Font(Res.font.tinos_regular, FontWeight.Normal),
         Font(Res.font.tinos_bold, FontWeight.Bold)
     )
@@ -76,7 +75,7 @@ fun CustomTheme(content : @Composable () -> Unit){
         titleSmall = TextStyle(
             fontSize = 15.sp
         ),
-    ).defaultFontFamily(TinosFontFamily)
+    ).defaultFontFamily(tinosFontFamily)
 
 
 

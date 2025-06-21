@@ -8,15 +8,11 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
@@ -29,12 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
 import kotlinx.serialization.Serializable
 
@@ -54,9 +45,9 @@ data class RecipeScreen(val id : Int)
 @Composable
 fun RecipeScreen(viewModel: RecipeViewModel) {
     Scaffold(
-        topBar = { ToolBar(viewModel.state?.tittle ?: "Sin Titulo") },
+        topBar = { ToolBar(viewModel.state?.tittle ?: "No tittle") },
     ) { innerPadding ->
-        Content(viewModel, innerPadding)
+        Content(innerPadding)
     }
 }
 
@@ -82,7 +73,7 @@ fun ToolBar(tittle: String) {
 }
 
 @Composable
-fun Content(viewModel: RecipeViewModel, innerPadding: PaddingValues) {
+fun Content(innerPadding: PaddingValues) {
 
     Column(
         modifier = Modifier.
@@ -92,9 +83,9 @@ fun Content(viewModel: RecipeViewModel, innerPadding: PaddingValues) {
             .padding(top = 3.dp, bottom = 3.dp)
     ) {
         ExpandableGeneralCard(
-            "Ingredientes",0.3f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp)
+            "Ingredients",0.3f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp)
         )
-        ExpandableGeneralCard("Pasos",1f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp))
+        ExpandableGeneralCard("Steps",1f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp))
 
     }
 }

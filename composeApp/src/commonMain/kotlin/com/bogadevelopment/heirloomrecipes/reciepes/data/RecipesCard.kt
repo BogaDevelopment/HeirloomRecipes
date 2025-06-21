@@ -21,9 +21,11 @@ object RecipeRepository{
         return _recipes.find { it.id == id }
     }
 
+    /* To do
     fun deleteRecipe(id: Int) {
         _recipes.removeAll { it.id == id }
     }
+     */
 
 }
 

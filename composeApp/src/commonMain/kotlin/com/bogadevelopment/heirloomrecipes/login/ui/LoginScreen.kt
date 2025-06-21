@@ -56,10 +56,7 @@ fun LoginScreen(
     }
 
     val state = viewModel.state
-    val message = when{
-        state.error != null -> state.error
-        else -> null
-    }
+
 
     Box(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
@@ -100,7 +97,7 @@ fun Body(
         VerticalSpacer(5)
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, Modifier,email,password,{ viewModel.login(email, password)},{viewModel.loginEnable(email, password)})
+        GeneralButton("Log in", 20, Modifier, { viewModel.login(email, password)},{viewModel.loginEnable(email, password)})
     }
 }
 
@@ -111,8 +108,6 @@ fun GeneralButton(
     text: String,
     shape: Int,
     modifier: Modifier,
-    email : String,
-    password : String,
     isLogin: () -> Unit,
     isValid: () -> Boolean
 ) {
