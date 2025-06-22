@@ -14,6 +14,7 @@ class LoginViewModel : ViewModel() {
     var state by mutableStateOf(UiState())
         private set
 
+
     data class UiState (
         val loggedIn : Boolean = false,
         val error : String? = null

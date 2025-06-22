@@ -30,7 +30,7 @@ fun App() {
         NavHost(navController, startDestination = startScreen) {
 
             composable<LoginScreen> {
-                LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)})
+                LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)}, toRegisterView = {navController.navigate(RegisterScreen)})
             }
             composable<RegisterScreen> {
                 RegisterScreen(onRegister = { navController.navigate(LoginScreen)})

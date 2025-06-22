@@ -1,8 +1,10 @@
 package com.bogadevelopment.heirloomrecipes.login.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -49,6 +51,7 @@ object LoginScreen
 @Composable
 fun LoginScreen(
     onLoggedIn : () -> Unit,
+    toRegisterView : () -> Unit,
     viewModel: LoginViewModel = viewModel()) {
 
     val state = viewModel.state
@@ -61,7 +64,7 @@ fun LoginScreen(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
     ) {
         Header()
-        Body(Modifier.align(Alignment.Center).offset(y = (-30).dp).padding(horizontal = 20.dp), viewModel, state)
+        Body(Modifier.align(Alignment.Center).offset(y = (-30).dp).padding(horizontal = 20.dp), viewModel, state, toRegisterView)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -81,7 +84,8 @@ fun Footer(modifier: Modifier){
 fun Body(
     modifier: Modifier,
     viewModel: LoginViewModel,
-    state: LoginViewModel.UiState
+    state: LoginViewModel.UiState,
+    toRegisterView: () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -97,8 +101,16 @@ fun Body(
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
         GeneralButton("Log in", 20, Modifier, { viewModel.login(email, password)},{viewModel.loginEnable(email, password)})
+        VerticalSpacer(40)
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
+            CustomText("Don't have an account?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground)
+            CustomText("Register", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.primary , Modifier.align(Alignment.CenterVertically).padding(start = 5.dp).clickable { toRegisterView() })
+
+        }
     }
 }
+
+
 
 // General components
 
@@ -167,6 +179,7 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
+            errorBorderColor = MaterialTheme.colorScheme.error
         )
     )
 }
