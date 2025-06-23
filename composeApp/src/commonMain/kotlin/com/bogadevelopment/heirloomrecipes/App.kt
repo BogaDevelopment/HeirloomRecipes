@@ -30,7 +30,11 @@ fun App() {
         NavHost(navController, startDestination = startScreen) {
 
             composable<LoginScreen> {
-                LoginScreen(onLoggedIn = { navController.navigate(RecipesScreen)}, toRegisterView = {navController.navigate(RegisterScreen)})
+                LoginScreen(onLoggedIn = {
+                    navController.navigate(RecipesScreen){
+                        popUpTo(LoginScreen){ inclusive = true }
+                    }
+                                         }, toRegisterView = {navController.navigate(RegisterScreen)})
             }
             composable<RegisterScreen> {
                 RegisterScreen(onRegister = { navController.navigate(LoginScreen)})
