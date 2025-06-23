@@ -27,7 +27,7 @@ fun App() {
 
     CustomTheme {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = startScreen) {
+        NavHost(navController, startDestination = RecipesScreen) {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = {

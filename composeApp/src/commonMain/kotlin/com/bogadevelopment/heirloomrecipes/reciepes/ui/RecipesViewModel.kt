@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipesCard
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 
 class RecipesViewModel : ViewModel(){
 
@@ -33,6 +35,16 @@ class RecipesViewModel : ViewModel(){
             RecipeRepository.addRecipe(text)
         }
         onDialogDismiss()
+    }
+
+    suspend fun logout() {
+        try
+        {
+            Firebase.auth.signOut()
+        }
+        catch (e : Exception) {
+            println(e.message)
+        }
     }
 
     /* To do
