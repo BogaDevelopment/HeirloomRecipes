@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.dialogs.NewRecipeDialog
@@ -47,7 +49,7 @@ import kotlinx.serialization.Serializable
 object RecipesScreen
 
 @Composable
-fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewModel = viewModel()){
+fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit, viewModel: RecipesViewModel = viewModel()){
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -55,10 +57,13 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewMod
     ModalNavigationDrawer(
         modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
         drawerState = drawerState,
-        drawerContent = {DrawerContent(onLogout = { scope.launch {  }})},
+        drawerContent = {DrawerContent(onLogout = { scope.launch {
+            viewModel.logout()
+            onLogOut()
+        }})},
     ){
         Scaffold(
-            topBar = { ToolBar("Heirloom Recipes") },
+            topBar = { ToolBar("Heirloom Recipes", Icons.Default.Menu){scope.launch { drawerState.open() }} },
             floatingActionButton = {FAB(viewModel)},
         ){ innerPadding ->
             Content(viewModel, innerPadding, onItemClick)
@@ -68,16 +73,25 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel: RecipesViewMod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToolBar(text : String){
+fun ToolBar(text : String, icon : ImageVector, onClick : () -> Unit){
     TopAppBar(
-        title = {CustomText(text, MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground)},
+        title = {CustomText(text, MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(start = 5.dp))},
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             scrolledContainerColor = Color.Yellow,
             navigationIconContentColor = Color.Cyan,
             titleContentColor = Color.White,
             actionIconContentColor = Color.Black
-        )
+        ),
+        navigationIcon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = "Drawer Icon",
+                modifier = Modifier.clickable { onClick() }.padding(start = 5.dp),
+                tint = MaterialTheme.colorScheme.onBackground
+
+            )
+        }
     )
 }
 
@@ -114,7 +128,7 @@ fun RecipesList(
         itemsIndexed(viewModel.recipes, key = {_, item -> item.id}){ index, item ->
             Card(modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 10.dp).padding(top = 5.dp).clickable{onItemClick(item)}, elevation = CardDefaults.cardElevation(8.dp)){
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary), contentAlignment = Alignment.CenterStart){
-                    CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 10.dp).wrapContentWidth())
+                    CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 3.dp).wrapContentWidth())
                     IconButton(onClick = {}, modifier = Modifier.align(Alignment.CenterEnd)){
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More actions")
                     }

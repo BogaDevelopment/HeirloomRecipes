@@ -27,7 +27,7 @@ fun App() {
 
     CustomTheme {
         val navController = rememberNavController()
-        NavHost(navController, startDestination = RecipesScreen) {
+        NavHost(navController, startDestination = startScreen) {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = {
@@ -40,7 +40,11 @@ fun App() {
                 RegisterScreen(onRegister = { navController.navigate(LoginScreen)})
             }
             composable<RecipesScreen>{
-                RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id))})
+                RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id))}, onLogOut = {
+                    navController.navigate(LoginScreen){
+                        popUpTo(RecipesScreen){ inclusive = true }
+                    }
+                })
             }
             composable<RecipeScreen> {  backStackEntry ->
                 val recipe = backStackEntry.toRoute<RecipeScreen>()

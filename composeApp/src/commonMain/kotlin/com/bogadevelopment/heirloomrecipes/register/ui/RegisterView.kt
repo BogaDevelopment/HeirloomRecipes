@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,7 +32,7 @@ object RegisterScreen
 fun RegisterScreen(onRegister : () -> Unit, viewModel: RegisterViewModel = viewModel()){
 
     Scaffold(
-        topBar = { ToolBar("Heirloom Recipes") },
+        topBar = { ToolBar("Heirloom Recipes", Icons.Default.ArrowBack, {}) },
     ){ innerPadding ->
         Content(innerPadding, viewModel,onRegister)
     }

@@ -1,6 +1,5 @@
 package com.bogadevelopment.heirloomrecipes.reciepes.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -19,7 +18,7 @@ fun DrawerContent(onLogout: () -> Unit) {
         drawerContainerColor = MaterialTheme.colorScheme.background
     ) {
         Spacer(Modifier.height(16.dp))
-        //Text("Cerrar sesión", modifier = Modifier.padding(start = 10.dp).clickable { onLogout() })
+        Text("Cerrar sesión", modifier = Modifier.padding(start = 10.dp).clickable { onLogout() })
     }
 
 }
