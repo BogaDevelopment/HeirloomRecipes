@@ -30,7 +30,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.serialization.Serializable
 
@@ -54,17 +54,12 @@ fun LoginScreen(
     toRegisterView : () -> Unit,
     viewModel: LoginViewModel = viewModel()) {
 
-    val state = viewModel.state
-
-    LaunchedEffect(viewModel.state.loggedIn){
-        if(viewModel.state.loggedIn) onLoggedIn()
-    }
 
     Box(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
     ) {
         Header()
-        Body(Modifier.align(Alignment.Center).offset(y = (-30).dp).padding(horizontal = 20.dp), viewModel, state, toRegisterView)
+        Body(Modifier.align(Alignment.Center).offset(y = (-30).dp).padding(horizontal = 20.dp), viewModel, toRegisterView, onLoggedIn)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -84,23 +79,27 @@ fun Footer(modifier: Modifier){
 fun Body(
     modifier: Modifier,
     viewModel: LoginViewModel,
-    state: LoginViewModel.UiState,
-    toRegisterView: () -> Unit
+    toRegisterView: () -> Unit,
+    onLoggedIn : () -> Unit,
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState.loggedIn){
+        if(uiState.loggedIn) onLoggedIn()
+    }
 
     Column(modifier = modifier) {
         VerticalSpacer(40)
         CustomTittle("Welcome", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
         VerticalSpacer(60)
-        Field(email, { email = it }, "Email", state.error != null, "email")
+        Field(uiState.email, { viewModel.onEmailChanged(it) }, "Email", uiState.error != null, "email")
         VerticalSpacer(10)
-        Field(password, { password = it }, "Password", state.error != null,"password")
+        Field(uiState.password, { viewModel.onPasswordChanged(it) }, "Password", uiState.error != null,"password")
         VerticalSpacer(5)
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, Modifier, { viewModel.login(email, password)},{viewModel.loginEnable(email, password)})
+        GeneralButton("Log in", 20, Modifier, {viewModel.login()},uiState.isLoginEnable)
         VerticalSpacer(40)
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
             CustomText("Don't have an account?", MaterialTheme.typography.bodyMedium,MaterialTheme.colorScheme.onBackground)
@@ -120,13 +119,13 @@ fun GeneralButton(
     shape: Int,
     modifier: Modifier,
     isLogin: () -> Unit,
-    isValid: () -> Boolean
+    isValid: Boolean
 ) {
     Button(
         onClick = { isLogin() },
         shape = RoundedCornerShape(shape.dp),
         modifier = modifier.fillMaxWidth(),
-        enabled = isValid()
+        enabled = isValid
     ) {
         Text(text = text, fontSize = 20.sp)
     }

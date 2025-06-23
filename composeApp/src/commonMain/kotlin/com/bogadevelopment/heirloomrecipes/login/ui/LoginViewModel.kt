@@ -1,44 +1,85 @@
 package com.bogadevelopment.heirloomrecipes.login.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
 
-    var state by mutableStateOf(UiState())
-        private set
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState : StateFlow<LoginUiState> = _uiState
 
 
-    data class UiState (
+    data class LoginUiState (
+        val email : String = "",
+        val password : String = "",
         val loggedIn : Boolean = false,
+        val isLoginEnable : Boolean = false,
         val error : String? = null
     )
 
-    fun login(user : String, password : String){
+    fun login(){
 
-        if(!loginEnable(user, password)) {
-            state = UiState(false, "Email or password incorrect")
+        if(!_uiState.value.isLoginEnable) {
+            _uiState.update {
+                it.copy(loggedIn = false, error = null)
+            }
             return
         }
 
         viewModelScope.launch {
             try {
-                Firebase.auth.signInWithEmailAndPassword(user, password)
-                state = UiState(loggedIn = true)
+                Firebase.auth.signInWithEmailAndPassword(_uiState.value.email, _uiState.value.password)
+                _uiState.update {
+                    it.copy(loggedIn = true)
+                }
             } catch (e: Exception) {
-                state = UiState(false, "e.message")
+                _uiState.update {
+                    it.copy(loggedIn = false, error = e.message)
+                }
+                clearFields()
             }
         }
     }
 
-    fun loginEnable (user : String, pass : String) : Boolean {
-        return user.contains("@") && user.contains(".com") && pass.length >= 8 && user.isNotEmpty() && pass.isNotEmpty()
+    private fun clearFields(){
+        _uiState.update {
+            it.copy(email = "", password = "")
+        }
+    }
+
+    fun onEmailChanged(email: String) {
+        _uiState.update { state ->
+            state.copy(email = email)
+        }
+        verifyLogin()
+    }
+
+    fun onPasswordChanged(password: String) {
+        _uiState.update { state ->
+            state.copy(password = password)
+        }
+        verifyLogin()
+    }
+
+
+    private fun verifyLogin(){
+        val enabledLogin : Boolean = isEmailValid(_uiState.value.email) && isPasswordValid(_uiState.value.password) && fieldsNotEmpty()
+        _uiState.update {
+            it.copy(isLoginEnable = enabledLogin)
+        }
+    }
+
+    private fun isEmailValid(email : String) : Boolean = email.contains("@") && email.contains(".com")
+    private fun isPasswordValid(password : String) : Boolean = password.length >= 8
+
+    private fun fieldsNotEmpty() : Boolean {
+        return _uiState.value.email.isNotEmpty() && _uiState.value.password.isNotEmpty()
     }
 
 }

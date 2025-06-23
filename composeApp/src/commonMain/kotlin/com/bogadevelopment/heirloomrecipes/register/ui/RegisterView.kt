@@ -11,12 +11,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bogadevelopment.heirloomrecipes.reciepes.ui.ToolBar
 import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,42 +29,38 @@ object RegisterScreen
 @Composable
 fun RegisterScreen(onRegister : () -> Unit, viewModel: RegisterViewModel = viewModel()){
 
-    val state = viewModel.state
-
-    LaunchedEffect(viewModel.state.registered){
-        if(viewModel.state.registered) onRegister()
-    }
-
     Scaffold(
         topBar = { ToolBar("Heirloom Recipes") },
     ){ innerPadding ->
-        Content(innerPadding, state, viewModel)
+        Content(innerPadding, viewModel,onRegister)
     }
 }
 
 @Composable
 fun Content(
     innerPadding: PaddingValues,
-    state: RegisterViewModel.UiState,
-    viewModel: RegisterViewModel
+    viewModel: RegisterViewModel,
+    onRegister : () -> Unit
 ){
 
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var repeatPassword by rememberSaveable { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel.uiState.value.registered){
+        if(viewModel.uiState.value.registered) onRegister()
+    }
 
     Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
         Column(modifier = Modifier.align(Alignment.Center).offset(y = (-90).dp).padding(horizontal = 20.dp)){
             VerticalSpacer(40)
             CustomTittle("New Account", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
             VerticalSpacer(60)
-            Field(email, { email = it }, "Email", state.error != null, "email")
+            Field(uiState.email, { viewModel.onEmailChanged(it) }, "Email", uiState.error != null, "email")
             VerticalSpacer(10)
-            Field(password, { password = it }, "Password", state.error != null,"password")
+            Field(uiState.password, { viewModel.onPasswordChanged(it) }, "Password", uiState.error != null,"password")
             VerticalSpacer(5)
-            Field(repeatPassword, { repeatPassword = it }, "Repeat password", state.error != null,"password")
+            Field(uiState.repeatPassword, { viewModel.onRepeatPasswordChanged(it) }, "Repeat password", uiState.error != null,"password")
             VerticalSpacer(20)
-            GeneralButton("Create Account", 20, Modifier, { viewModel.register(email, password, repeatPassword)},{viewModel.registerEnable(email, password, repeatPassword)})
+            GeneralButton("Create Account", 20, Modifier, { viewModel.register()}, uiState.isRegisterEnable)
         }
     }
 
