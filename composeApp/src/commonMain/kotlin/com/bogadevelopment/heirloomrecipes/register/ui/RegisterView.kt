@@ -52,12 +52,16 @@ fun Content(
     }
 
     Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
-        Column(modifier = Modifier.align(Alignment.Center).offset(y = (-90).dp).padding(horizontal = 20.dp)){
+        Column(modifier = Modifier.align(Alignment.Center).offset(y = (-40).dp).padding(horizontal = 20.dp)){
             VerticalSpacer(40)
             CustomTittle("New Account", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
             VerticalSpacer(60)
+            Field(uiState.name, { viewModel.onNameChanged(it) }, "Name", uiState.error != null, "name")
+            VerticalSpacer(5)
+            Field(uiState.lastName, { viewModel.onLastNameChanged(it) }, "Last Name", uiState.error != null, "lastName")
+            VerticalSpacer(5)
             Field(uiState.email, { viewModel.onEmailChanged(it) }, "Email", uiState.error != null, "email")
-            VerticalSpacer(10)
+            VerticalSpacer(5)
             Field(uiState.password, { viewModel.onPasswordChanged(it) }, "Password", uiState.error != null,"password")
             VerticalSpacer(5)
             Field(uiState.repeatPassword, { viewModel.onRepeatPasswordChanged(it) }, "Repeat password", uiState.error != null,"password")

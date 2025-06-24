@@ -12,16 +12,18 @@ import kotlinx.coroutines.launch
 class RegisterViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
-    val uiState : MutableStateFlow<RegisterUiState> = _uiState
+    val uiState: MutableStateFlow<RegisterUiState> = _uiState
 
 
-    data class RegisterUiState (
-        val email : String = "",
+    data class RegisterUiState(
+        val name: String = "",
+        val lastName: String = "",
+        val email: String = "",
         val password: String = "",
-        val repeatPassword : String = "",
-        val registered : Boolean = false,
-        val isRegisterEnable : Boolean = false,
-        val error : String? = null
+        val repeatPassword: String = "",
+        val registered: Boolean = false,
+        val isRegisterEnable: Boolean = false,
+        val error: String? = null
     )
 
     fun register() {
@@ -35,7 +37,10 @@ class RegisterViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                Firebase.auth.createUserWithEmailAndPassword(_uiState.value.email, _uiState.value.password)
+                Firebase.auth.createUserWithEmailAndPassword(
+                    _uiState.value.email,
+                    _uiState.value.password
+                )
                 _uiState.update {
                     it.copy(registered = true)
                 }
@@ -48,6 +53,22 @@ class RegisterViewModel : ViewModel() {
         }
 
     }
+
+
+    fun onNameChanged(name: String) {
+        _uiState.update { state ->
+            state.copy(name = name)
+        }
+        verifyRegister()
+    }
+
+    fun onLastNameChanged(lastName: String) {
+        _uiState.update { state ->
+            state.copy(lastName = lastName)
+        }
+        verifyRegister()
+    }
+
 
     fun onEmailChanged(email: String) {
         _uiState.update { state ->
@@ -71,25 +92,25 @@ class RegisterViewModel : ViewModel() {
     }
 
 
-
-    private fun verifyRegister(){
-        val enabledRegister : Boolean = isEmailValid(_uiState.value.email) && isPasswordValid(_uiState.value.password) && fieldsNotEmpty() && _uiState.value.password == _uiState.value.repeatPassword
+    private fun verifyRegister() {
+        val enabledRegister: Boolean =
+            isEmailValid(_uiState.value.email) && isPasswordValid(_uiState.value.password) && fieldsNotEmpty() && _uiState.value.password == _uiState.value.repeatPassword
         _uiState.update {
             it.copy(isRegisterEnable = enabledRegister)
         }
     }
 
 
-    private fun isEmailValid(email : String) : Boolean = email.contains("@") && email.contains(".com")
-    private fun isPasswordValid(password : String) : Boolean = password.length >= 8
+    private fun isEmailValid(email: String): Boolean = email.contains("@") && email.contains(".com")
+    private fun isPasswordValid(password: String): Boolean = password.length >= 8
 
-    private fun fieldsNotEmpty() : Boolean {
-        return _uiState.value.email.isNotEmpty() && _uiState.value.password.isNotEmpty() && _uiState.value.repeatPassword.isNotEmpty()
+    private fun fieldsNotEmpty(): Boolean {
+        return _uiState.value.email.isNotEmpty() && _uiState.value.password.isNotEmpty() && _uiState.value.repeatPassword.isNotEmpty() && _uiState.value.name.isNotEmpty() && _uiState.value.lastName.isNotEmpty()
     }
 
-    private fun clearFields(){
+    private fun clearFields() {
         _uiState.update {
-            it.copy(email = "", password = "", repeatPassword = "")
+            it.copy(name = "", lastName = "", email = "", password = "", repeatPassword = "")
         }
     }
 
