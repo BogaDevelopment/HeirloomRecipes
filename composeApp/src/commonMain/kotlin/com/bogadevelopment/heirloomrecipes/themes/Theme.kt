@@ -50,7 +50,7 @@ fun CustomTheme(content : @Composable () -> Unit){
 
     val typography = Typography(
         headlineLarge = TextStyle(
-            fontSize = 50.sp,
+            fontSize = 40.sp,
             fontWeight = FontWeight.Bold
         ),
         headlineMedium = TextStyle(
@@ -68,10 +68,10 @@ fun CustomTheme(content : @Composable () -> Unit){
             fontSize = 10.sp
         ),
         titleLarge = TextStyle(
-            fontSize = 50.sp
+            fontSize = 40.sp
         ),
-        titleMedium = TextStyle(        // use to toolbar
-            fontSize = 20.sp
+        titleMedium = TextStyle(
+            fontSize = 30.sp
         ),
         titleSmall = TextStyle(
             fontSize = 15.sp

@@ -75,7 +75,7 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit, vi
 @Composable
 fun ToolBar(text : String, icon : ImageVector, onClick : () -> Unit){
     TopAppBar(
-        title = {CustomText(text, MaterialTheme.typography.headlineMedium, MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(start = 5.dp))},
+        title = {CustomText(text, MaterialTheme.typography.titleMedium, MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(start = 5.dp))},
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
             scrolledContainerColor = Color.Yellow,
