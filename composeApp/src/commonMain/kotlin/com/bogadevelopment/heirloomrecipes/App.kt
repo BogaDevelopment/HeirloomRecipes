@@ -37,7 +37,7 @@ fun App() {
                                          }, toRegisterView = {navController.navigate(RegisterScreen)})
             }
             composable<RegisterScreen> {
-                RegisterScreen(onRegister = { navController.navigate(LoginScreen)})
+                RegisterScreen(onRegister = { navController.navigate(LoginScreen)}, onBack = {navController.popBackStack()})
             }
             composable<RecipesScreen>{
                 RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id))}, onLogOut = {
@@ -48,7 +48,7 @@ fun App() {
             }
             composable<RecipeScreen> {  backStackEntry ->
                 val recipe = backStackEntry.toRoute<RecipeScreen>()
-                RecipeScreen(viewModel {RecipeViewModel(recipe.id)}) }
+                RecipeScreen(viewModel {RecipeViewModel(recipe.id)}, onBack = {navController.popBackStack()}) }
         }
     }
 

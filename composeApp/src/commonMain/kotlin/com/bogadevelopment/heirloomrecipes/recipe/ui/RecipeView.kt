@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
@@ -41,9 +41,10 @@ import kotlinx.serialization.Serializable
 data class RecipeScreen(val id : Int)
 
 @Composable
-fun RecipeScreen(viewModel: RecipeViewModel) {
+fun RecipeScreen(viewModel: RecipeViewModel, onBack: () -> Unit) {
     Scaffold(
-        topBar = { ToolBar(viewModel.state?.tittle ?: "No tittle", Icons.Default.ArrowBack, {}) },
+        topBar = { ToolBar(viewModel.state?.tittle ?: "No tittle",
+            Icons.AutoMirrored.Filled.ArrowBack) {onBack()} },
     ) { innerPadding ->
         Content(innerPadding)
     }

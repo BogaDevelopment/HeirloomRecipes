@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,10 +29,10 @@ import com.bogadevelopment.heirloomrecipes.login.ui.VerticalSpacer
 object RegisterScreen
 
 @Composable
-fun RegisterScreen(onRegister : () -> Unit, viewModel: RegisterViewModel = viewModel()){
+fun RegisterScreen(onRegister : () -> Unit, onBack : () -> Unit, viewModel: RegisterViewModel = viewModel()){
 
     Scaffold(
-        topBar = { ToolBar("Heirloom Recipes", Icons.Default.ArrowBack, {}) },
+        topBar = { ToolBar("Heirloom Recipes", Icons.AutoMirrored.Filled.ArrowBack) {onBack()} },
     ){ innerPadding ->
         Content(innerPadding, viewModel,onRegister)
     }
