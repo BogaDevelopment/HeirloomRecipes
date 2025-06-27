@@ -1,0 +1,18 @@
+CREATE TABLE Recipes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tittle TEXT NOT NULL
+);
+
+insert:
+INSERT INTO Recipes (id, tittle)
+VALUES (?,?);
+
+update:
+UPDATE Recipes
+SET tittle = ?
+WHERE id = ?;
+
+
+selectAll:
+SELECT *
+FROM Recipes;

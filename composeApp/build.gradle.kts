@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,6 +8,15 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.sqldelight)
+}
+
+sqldelight{
+    databases{
+        create("Database"){
+            packageName.set("com.bogadevelopment.heirloomrecipes.database")
+        }
+    }
 }
 
 kotlin {
@@ -35,7 +43,19 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            //SQLDeLight
+
+            implementation(libs.android.driver)
         }
+
+        iosMain.dependencies {
+
+            // SQLDeLight
+            implementation(libs.native.driver)
+            implementation(libs.stately.common)
+        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)

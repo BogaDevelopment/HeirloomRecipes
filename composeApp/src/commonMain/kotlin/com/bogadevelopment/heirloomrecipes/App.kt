@@ -16,14 +16,13 @@ import dev.gitlive.firebase.auth.FirebaseUser
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-
 @Composable
 @Preview
 fun App() {
 
-    val firebaseUser : FirebaseUser? by remember { mutableStateOf(null) }
+    val firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
 
-    val startScreen : Any = if (firebaseUser == null) LoginScreen else RecipesScreen
+    val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
     CustomTheme {
         val navController = rememberNavController()
@@ -31,24 +30,31 @@ fun App() {
 
             composable<LoginScreen> {
                 LoginScreen(onLoggedIn = {
-                    navController.navigate(RecipesScreen){
-                        popUpTo(LoginScreen){ inclusive = true }
+                    navController.navigate(RecipesScreen) {
+                        popUpTo(LoginScreen) { inclusive = true }
                     }
-                                         }, toRegisterView = {navController.navigate(RegisterScreen)})
+                }, toRegisterView = { navController.navigate(RegisterScreen) })
             }
             composable<RegisterScreen> {
-                RegisterScreen(onRegister = { navController.navigate(LoginScreen)}, onBack = {navController.popBackStack()})
+                RegisterScreen(
+                    onRegister = { navController.navigate(LoginScreen) },
+                    onBack = { navController.popBackStack() })
             }
-            composable<RecipesScreen>{
-                RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id))}, onLogOut = {
-                    navController.navigate(LoginScreen){
-                        popUpTo(RecipesScreen){ inclusive = true }
-                    }
-                })
+            composable<RecipesScreen> {
+                RecipesScreen(
+                    onItemClick = { navController.navigate(RecipeScreen(it.id)) },
+                    onLogOut = {
+                        navController.navigate(LoginScreen) {
+                            popUpTo(RecipesScreen) { inclusive = true }
+                        }
+                    })
             }
-            composable<RecipeScreen> {  backStackEntry ->
+            composable<RecipeScreen> { backStackEntry ->
                 val recipe = backStackEntry.toRoute<RecipeScreen>()
-                RecipeScreen(viewModel {RecipeViewModel(recipe.id)}, onBack = {navController.popBackStack()}) }
+                RecipeScreen(
+                    viewModel { RecipeViewModel(recipe.id) },
+                    onBack = { navController.popBackStack() })
+            }
         }
     }
 
