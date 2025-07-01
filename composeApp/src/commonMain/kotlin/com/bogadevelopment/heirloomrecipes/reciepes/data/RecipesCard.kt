@@ -1,12 +1,14 @@
 package com.bogadevelopment.heirloomrecipes.reciepes.data
 
 import androidx.compose.runtime.mutableStateListOf
+import com.bogadevelopment.heirloomrecipes.database.Database
 
 data class RecipesCard (
     val id : Int,
     val tittle: String
 )
 
+/*
 object RecipeRepository{
     private val _recipes = mutableStateListOf<RecipesCard>()
     val recipes : List<RecipesCard> get() = _recipes
@@ -29,3 +31,4 @@ object RecipeRepository{
 
 }
 
+*/

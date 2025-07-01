@@ -37,7 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.remember
+import com.bogadevelopment.heirloomrecipes.database.Database
 import com.bogadevelopment.heirloomrecipes.dialogs.NewRecipeDialog
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
 import com.bogadevelopment.heirloomrecipes.reciepes.data.RecipesCard
@@ -49,10 +50,12 @@ import kotlinx.serialization.Serializable
 object RecipesScreen
 
 @Composable
-fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit, viewModel: RecipesViewModel = viewModel()){
+fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit, database : Database){
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val viewModel = rememberRecipesViewModel(database)
+
 
     ModalNavigationDrawer(
         modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
@@ -69,6 +72,11 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit, vi
             Content(viewModel, innerPadding, onItemClick)
         }
     }
+}
+
+@Composable
+fun rememberRecipesViewModel(database: Database): RecipesViewModel {
+    return remember(database) { RecipesViewModel(database) }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +133,7 @@ fun RecipesList(
             .fillMaxSize()
             .padding(innerPadding)
     ){
-        itemsIndexed(viewModel.recipes, key = {_, item -> item.id}){ index, item ->
+        itemsIndexed(viewModel.recipes.toList(), key = { _, item -> item.id }) { index, item ->
             Card(modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 10.dp).padding(top = 5.dp).clickable{onItemClick(item)}, elevation = CardDefaults.cardElevation(8.dp)){
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary), contentAlignment = Alignment.CenterStart){
                     CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 3.dp).wrapContentWidth())

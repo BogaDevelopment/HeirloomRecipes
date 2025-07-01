@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.bogadevelopment.heirloomrecipes.database.Database
 import com.bogadevelopment.heirloomrecipes.login.ui.LoginScreen
 import com.bogadevelopment.heirloomrecipes.reciepes.ui.RecipesScreen
 import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeScreen
@@ -18,11 +19,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
+fun App(database: Database) {
 
     val firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
+    //val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
+    val startScreen = RecipesScreen
 
-    val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
     CustomTheme {
         val navController = rememberNavController()
@@ -47,12 +49,14 @@ fun App() {
                         navController.navigate(LoginScreen) {
                             popUpTo(RecipesScreen) { inclusive = true }
                         }
-                    })
+                    },
+                    database
+                )
             }
             composable<RecipeScreen> { backStackEntry ->
                 val recipe = backStackEntry.toRoute<RecipeScreen>()
                 RecipeScreen(
-                    viewModel { RecipeViewModel(recipe.id) },
+                    viewModel { RecipeViewModel(recipe.id, database) },
                     onBack = { navController.popBackStack() })
             }
         }

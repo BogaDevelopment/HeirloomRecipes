@@ -4,15 +4,17 @@ CREATE TABLE Recipes (
 );
 
 insert:
-INSERT INTO Recipes (id, tittle)
-VALUES (?,?);
+INSERT INTO Recipes (tittle) VALUES (?);
 
 update:
-UPDATE Recipes
-SET tittle = ?
-WHERE id = ?;
-
+UPDATE Recipes SET tittle = ? WHERE id = ?;
 
 selectAll:
-SELECT *
-FROM Recipes;
+SELECT * FROM Recipes;
+
+deleteById:
+DELETE FROM Recipes WHERE id = ?;
+
+selectById:
+SELECT * FROM Recipes WHERE id = ?;
+
