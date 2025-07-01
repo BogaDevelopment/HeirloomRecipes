@@ -13,7 +13,9 @@ import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.recipe.ui.RecipeViewModel
 import com.bogadevelopment.heirloomrecipes.register.ui.RegisterScreen
 import com.bogadevelopment.heirloomrecipes.themes.CustomTheme
+import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.auth
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -21,9 +23,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App(database: Database) {
 
-    val firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
-    //val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
-    val startScreen = RecipesScreen
+    val firebaseUser: FirebaseUser? = remember { Firebase.auth.currentUser }
+    val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
 
     CustomTheme {
