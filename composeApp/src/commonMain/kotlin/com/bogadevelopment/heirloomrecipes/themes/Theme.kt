@@ -27,6 +27,7 @@ val darkColorScheme = darkColorScheme(
     primary = Color(0xFF4DB6AC),
     secondary = Color(0xFF003845),
     tertiary = Color(0xFF0D6276),
+    surface = Color(0xCC333333),
     surfaceVariant = Color(0x40FFFFFF),     // Tags
     background = Color(0xFF004453),        // Backgrounds
     onBackground = Color(0xFFFFFFFF),      // Tittles

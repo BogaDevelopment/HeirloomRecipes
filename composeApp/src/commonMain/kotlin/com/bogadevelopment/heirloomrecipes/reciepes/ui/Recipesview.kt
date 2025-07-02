@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +21,8 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,10 +30,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.DpOffset
 import com.bogadevelopment.heirloomrecipes.database.Database
 import com.bogadevelopment.heirloomrecipes.dialogs.NewRecipeDialog
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
@@ -136,11 +144,18 @@ fun RecipesList(
         itemsIndexed(viewModel.recipes.toList(), key = { _, item -> item.id }) { index, item ->
             Card(modifier = Modifier.fillMaxWidth().height(120.dp).padding(horizontal = 10.dp).padding(top = 5.dp).clickable{onItemClick(item)}, elevation = CardDefaults.cardElevation(8.dp)){
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.tertiary), contentAlignment = Alignment.CenterStart){
-                    CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 3.dp).wrapContentWidth())
-                    IconButton(onClick = {}, modifier = Modifier.align(Alignment.CenterEnd)){
+                    var expanded by remember { mutableStateOf(false) }
+                    CustomText(item.tittle, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier.padding(start = 10.dp).wrapContentWidth())
+                    IconButton(onClick = {expanded = !expanded}, modifier = Modifier.align(Alignment.CenterEnd)){
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More actions")
                     }
-                    // Dropdown menu
+                    Box(modifier = Modifier.align(Alignment.CenterEnd).offset(y = (15).dp)){
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false}, modifier = Modifier.background(MaterialTheme.colorScheme.surface)){
+                            DropdownMenuItem(
+                                text = { Text("Delete", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground) },
+                                onClick = { expanded = false; viewModel.deleteIdRecipe(item.id)})
+                        }
+                    }
                 }
             }
 
