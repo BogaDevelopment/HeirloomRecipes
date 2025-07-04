@@ -15,14 +15,6 @@ class LoginViewModel : ViewModel() {
     val uiState : StateFlow<LoginUiState> = _uiState
 
 
-    data class LoginUiState (
-        val email : String = "",
-        val password : String = "",
-        val loggedIn : Boolean = false,
-        val isLoginEnable : Boolean = false,
-        val error : String? = null
-    )
-
     fun login(){
 
         if(!_uiState.value.isLoginEnable) {
@@ -83,3 +75,11 @@ class LoginViewModel : ViewModel() {
     }
 
 }
+
+data class LoginUiState (
+    val email : String = "",
+    val password : String = "",
+    val loggedIn : Boolean = false,
+    val isLoginEnable : Boolean = false,
+    val error : String? = null
+)

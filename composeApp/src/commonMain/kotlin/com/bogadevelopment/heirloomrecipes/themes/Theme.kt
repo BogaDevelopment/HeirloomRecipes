@@ -77,6 +77,9 @@ fun CustomTheme(content : @Composable () -> Unit){
         titleSmall = TextStyle(
             fontSize = 15.sp
         ),
+        displayMedium = TextStyle(
+            fontSize = 20.sp
+        ),
     ).defaultFontFamily(tinosFontFamily)
 
 

@@ -27,53 +27,73 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bogadevelopment.heirloomrecipes.login.ui.CustomText
 import com.bogadevelopment.heirloomrecipes.reciepes.ui.ToolBar
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecipeScreen(val id : Int)
+data class RecipeScreen(val id: Int)
 
 @Composable
 fun RecipeScreen(viewModel: RecipeViewModel, onBack: () -> Unit) {
     Scaffold(
-        topBar = { ToolBar(viewModel.state?.tittle ?: "No tittle",
-            Icons.AutoMirrored.Filled.ArrowBack) {onBack()} },
+        topBar = {
+            ToolBar(
+                viewModel.state?.tittle ?: "No tittle",
+                Icons.AutoMirrored.Filled.ArrowBack
+            ) { onBack() }
+        },
     ) { innerPadding ->
-        Content(innerPadding)
+        Content(innerPadding, viewModel)
     }
 }
 
 
 @Composable
-fun Content(innerPadding: PaddingValues) {
+fun Content(innerPadding: PaddingValues, viewModel: RecipeViewModel) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
-        modifier = Modifier.
-            fillMaxSize().
-            background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
             .padding(innerPadding)
             .padding(top = 3.dp, bottom = 3.dp)
     ) {
         ExpandableGeneralCard(
-            "Ingredients",0.3f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp)
+            "Ingredients",
+            uiState.ingredients,
+            0.3f,
+            Modifier.padding(horizontal = 10.dp).padding(top = 5.dp),
+            uiState.ingredientsExpanded,
+            { viewModel.onExpandedChanged("ingredients") },
+            {viewModel.onIngredientChanged(it)}
         )
-        ExpandableGeneralCard("Steps",1f ,Modifier.padding(horizontal = 10.dp).padding(top = 5.dp))
+        ExpandableGeneralCard(
+            "Steps",
+            uiState.steps,
+            1f,
+            Modifier.padding(horizontal = 10.dp).padding(top = 5.dp),
+            uiState.stepsExpanded,
+            { viewModel.onExpandedChanged("steps") },
+            { viewModel.onStepsChanged(it)}
+            )
 
     }
 }
 
 @Composable
-fun ExpandableGeneralCard(tittle: String,maxHeightFraction: Float ,modifier: Modifier) {
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
-    var expanded by remember { mutableStateOf(false) }
+fun ExpandableGeneralCard(
+    tittle: String,
+    text: String,
+    maxHeightFraction: Float,
+    modifier: Modifier,
+    isExpanded: Boolean,
+    onExpandedChanged: () -> Unit,
+    onTextChanged: (String) -> Unit
+) {
 
     Card(
         modifier
@@ -82,33 +102,33 @@ fun ExpandableGeneralCard(tittle: String,maxHeightFraction: Float ,modifier: Mod
             .animateContentSize(),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth()){
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val maxCardHeight = maxHeight * maxHeightFraction
 
             Column(
                 Modifier.background(MaterialTheme.colorScheme.secondary)
-                    .clickable { expanded = !expanded }) {
+                    .clickable { onExpandedChanged() }) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CustomText(
                         tittle,
-                        MaterialTheme.typography.titleMedium,
+                        MaterialTheme.typography.displayMedium,
                         MaterialTheme.colorScheme.onBackground,
                         Modifier.padding(top = 3.dp, bottom = 3.dp, start = 5.dp)
                     )
                     Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "Collar" else "Expand"
+                        imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (isExpanded) "Collar" else "Expand"
                     )
                 }
 
-                if (expanded) {
+                if (isExpanded) {
                     HorizontalDivider(color = MaterialTheme.colorScheme.onBackground)
                     OutlinedTextField(
                         value = text,
-                        onValueChange = { text = it },
+                        onValueChange = { onTextChanged(it) },
                         singleLine = false,
                         modifier = Modifier
                             .fillMaxWidth()
