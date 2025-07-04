@@ -5,30 +5,8 @@ import com.bogadevelopment.heirloomrecipes.database.Database
 
 data class RecipesCard (
     val id : Int,
-    val tittle: String
+    val tittle: String,
+    val ingredients : String = "",
+    val steps : String = ""
 )
 
-/*
-object RecipeRepository{
-    private val _recipes = mutableStateListOf<RecipesCard>()
-    val recipes : List<RecipesCard> get() = _recipes
-
-
-    fun addRecipe(text : String){
-        val newId = (_recipes.maxOfOrNull{ it.id} ?: 0) + 1
-        _recipes.add(RecipesCard(id = newId, tittle = text))
-    }
-
-    fun getById(id: Int): RecipesCard? {
-        return _recipes.find { it.id == id }
-    }
-
-    /* To do
-    fun deleteRecipe(id: Int) {
-        _recipes.removeAll { it.id == id }
-    }
-     */
-
-}
-
-*/

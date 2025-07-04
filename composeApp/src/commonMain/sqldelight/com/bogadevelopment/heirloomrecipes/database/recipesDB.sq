@@ -1,9 +1,11 @@
 CREATE TABLE Recipes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tittle TEXT NOT NULL
+    tittle TEXT NOT NULL,
+    ingredients TEXT,
+    steps TEXT
 );
 
-insert:
+insertTittle:
 INSERT INTO Recipes (tittle) VALUES (?);
 
 update:
@@ -17,4 +19,11 @@ DELETE FROM Recipes WHERE id = ?;
 
 selectById:
 SELECT * FROM Recipes WHERE id = ?;
+
+updateIngredients:
+UPDATE Recipes SET ingredients = ? WHERE id = ?;
+
+updateSteps:
+UPDATE Recipes SET steps = ? WHERE id = ?;
+
 

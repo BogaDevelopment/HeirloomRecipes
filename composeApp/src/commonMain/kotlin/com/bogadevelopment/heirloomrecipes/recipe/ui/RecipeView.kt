@@ -57,7 +57,7 @@ fun RecipeScreen(viewModel: RecipeViewModel, onBack: () -> Unit) {
                 viewModel.state?.tittle ?: "No tittle",
                 Icons.AutoMirrored.Filled.ArrowBack,
                 { onBack() },
-                {}
+                { viewModel.saveRecipe() }
             )
         },
     ) { innerPadding ->
@@ -95,8 +95,8 @@ fun ToolBarActions(text : String, icon : ImageVector, onClick : () -> Unit, onAc
                 tint = MaterialTheme.colorScheme.onBackground)
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false}, modifier = Modifier.background(MaterialTheme.colorScheme.surface)){
                 DropdownMenuItem(
-                    text = { Text("Delete", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground) },
-                    onClick = { expanded = false; {onAction}})
+                    text = { Text("Save", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground) },
+                    onClick = { expanded = false; onAction() })
             }
         }
     )

@@ -27,17 +27,27 @@ class RecipeRepositoryImpl(private val db: Database) : RecipeRepository {
 
     override fun getById(id: Int): RecipesCard? {
         return db.recipesDBQueries.selectById(id.toLong()).executeAsOneOrNull()?.let {
-            RecipesCard(id = it.id.toInt(), tittle = it.tittle)
+            RecipesCard(id = it.id.toInt(), tittle = it.tittle, ingredients = it.ingredients ?: "", steps = it.steps ?: "")
         }
     }
 
     override fun addRecipe(tittle: String) {
-        db.recipesDBQueries.insert(tittle)
+        db.recipesDBQueries.insertTittle(tittle)
         refreshRecipes()
     }
 
     override fun deleteRecipe(id: Int) {
         db.recipesDBQueries.deleteById(id.toLong())
+        refreshRecipes()
+    }
+
+    override fun updateIngredients(id: Int, ingredients: String) {
+        db.recipesDBQueries.updateIngredients(ingredients, id.toLong())
+        refreshRecipes()
+    }
+
+    override fun updateSteps(id: Int, steps: String) {
+        db.recipesDBQueries.updateSteps(steps, id.toLong())
         refreshRecipes()
     }
 }

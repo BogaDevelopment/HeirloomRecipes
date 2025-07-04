@@ -19,8 +19,17 @@ class RecipeViewModel(id : Int, private val db: Database)  : ViewModel(){
     private val _uiState = MutableStateFlow(RecipeUiState())
     val uiState: StateFlow<RecipeUiState> = _uiState
 
+    private val repo = RecipeRepositoryImpl(db)
+
     init{
         state = RecipeRepositoryImpl(db).getById(id)
+        state?.let {
+            _uiState.value = RecipeUiState(
+                tittle = it.tittle,
+                ingredients = it.ingredients,
+                steps = it.steps
+            )
+        }
     }
 
     fun onIngredientChanged(ingredients: String){
@@ -42,6 +51,13 @@ class RecipeViewModel(id : Int, private val db: Database)  : ViewModel(){
             }else{
                 state.copy(stepsExpanded = !_uiState.value.stepsExpanded)
             }
+        }
+    }
+
+    fun saveRecipe(){
+        state?.let{ recipe ->
+            repo.updateIngredients(recipe.id, _uiState.value.ingredients)
+            repo.updateSteps(recipe.id, _uiState.value.steps)
         }
     }
 

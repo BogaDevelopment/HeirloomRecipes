@@ -8,4 +8,7 @@ interface RecipeRepository {
     fun getById(id: Int): RecipesCard?
     fun addRecipe(tittle: String)
     fun deleteRecipe(id: Int)
+    fun updateIngredients(id: Int, ingredients: String)
+    fun updateSteps(id: Int, steps: String)
+
 }
