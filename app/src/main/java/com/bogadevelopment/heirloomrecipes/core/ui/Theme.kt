@@ -1,4 +1,4 @@
-package com.bogadevelopment.heirloomrecipes.ui.theme
+package com.bogadevelopment.heirloomrecipes.core.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
