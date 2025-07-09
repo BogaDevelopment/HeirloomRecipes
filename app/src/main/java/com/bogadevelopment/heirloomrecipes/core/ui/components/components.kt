@@ -3,11 +3,13 @@ package com.bogadevelopment.heirloomrecipes.core.ui.components
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -105,4 +107,37 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
 @Composable
 fun VerticalSpacer(size: Int) {
     Spacer(modifier = Modifier.height(size.dp))
+}
+
+@Composable
+fun CustomButton(
+    name: String,
+    textSize: Int,
+    modifier: Modifier = Modifier,
+    lado: String,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = { onClick() },
+        elevation = ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = 4.dp
+        ),
+        modifier = if (lado == "left") modifier.padding(
+            start = 15.dp,
+            end = 5.dp
+        ) else modifier.padding(end = 15.dp, start = 5.dp)
+    ) {
+        Text(name, fontSize = textSize.sp)
+    }
+}
+
+@Composable
+fun CustomField(name: String, label: String, onTextChanged: (String) -> Unit) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+        value = name,
+        shape = RoundedCornerShape(20),
+        onValueChange = { onTextChanged(it) },
+        label = { CustomText(label, MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground) },
+    )
 }

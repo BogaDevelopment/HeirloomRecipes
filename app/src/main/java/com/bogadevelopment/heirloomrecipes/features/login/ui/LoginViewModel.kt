@@ -32,7 +32,7 @@ class LoginViewModel : ViewModel() {
             }
         }else{
             _uiState.update {
-                it.copy(isLoginEnable = false)
+                it.copy(isLoginEnable = false )
             }
         }
     }
