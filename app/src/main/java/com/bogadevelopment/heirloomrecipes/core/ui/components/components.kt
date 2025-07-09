@@ -87,6 +87,7 @@ fun Field(text: String, onTextChanged: (String) -> Unit, ph: String, isError: Bo
                         imageVector = if(isPassVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                         contentDescription = if (isPassVisible) "Hide pass" else "Show pass"
                     )
+
                 }
             }
         },

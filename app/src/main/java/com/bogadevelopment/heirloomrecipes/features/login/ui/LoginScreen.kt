@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.core.ui.components.CustomText
 import com.bogadevelopment.heirloomrecipes.core.ui.components.CustomTittle
 import com.bogadevelopment.heirloomrecipes.core.ui.components.Field
@@ -30,7 +31,8 @@ object LoginScreen
 fun LoginScreen(
     onLoggedIn : () -> Unit,
     toRegisterView : () -> Unit,
-    viewModel: LoginViewModel ) {
+    viewModel: LoginViewModel = viewModel()
+) {
 
 
     Box(
