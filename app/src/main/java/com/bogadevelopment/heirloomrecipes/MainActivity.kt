@@ -30,7 +30,11 @@ fun NavigationWrapper() {
 
     NavHost(navController = navController, startDestination = LoginScreen){
         composable<LoginScreen>{
-            LoginScreen(onLoggedIn = {}, toRegisterView = {})
+            LoginScreen(onLoggedIn = {
+                navController.navigate(RecipesScreen) {
+                    popUpTo(LoginScreen) { inclusive = true }
+                }
+            }, toRegisterView = {})
         }
 
         composable<RecipesScreen> {
