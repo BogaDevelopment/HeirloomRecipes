@@ -29,7 +29,7 @@ val darkColorScheme = darkColorScheme(
     surfaceVariant = Color(0x40FFFFFF),     // Tags
     background = Color(0xFF004453),        // Backgrounds
     onBackground = Color(0xFFFFFFFF),      // Tittles
-    outlineVariant = Color(0x99FFFFFF),       //Transparent
+    outlineVariant = Color(0x00FFFFFF),       //Transparent
     error = Color(0xFFFF0000)
 )
 
