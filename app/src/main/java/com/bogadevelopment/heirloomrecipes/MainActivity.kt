@@ -15,6 +15,7 @@ import com.bogadevelopment.heirloomrecipes.core.ui.CustomTheme
 import com.bogadevelopment.heirloomrecipes.features.login.ui.LoginScreen
 import com.bogadevelopment.heirloomrecipes.features.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.features.recipes.ui.RecipesScreen
+import com.bogadevelopment.heirloomrecipes.features.register.ui.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,13 +33,19 @@ class MainActivity : ComponentActivity() {
 fun NavigationWrapper() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = RecipesScreen){
+    NavHost(navController = navController, startDestination = LoginScreen){
         composable<LoginScreen>{
             LoginScreen(onLoggedIn = {
                 navController.navigate(RecipesScreen) {
                     popUpTo(LoginScreen) { inclusive = true }
                 }
-            }, toRegisterView = {})
+            }, toRegisterView = { navController.navigate(RegisterScreen) })
+        }
+
+        composable<RegisterScreen> {
+            RegisterScreen(
+                onRegister = { navController.navigate(LoginScreen) },
+                onBack = { navController.popBackStack() })
         }
 
         composable<RecipesScreen> {
