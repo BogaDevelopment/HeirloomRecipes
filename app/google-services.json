@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1098308382496",
+    "project_id": "heirloomrecipesandroid",
+    "storage_bucket": "heirloomrecipesandroid.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098308382496:android:9bf35ab496071ac0b77145",
+        "android_client_info": {
+          "package_name": "com.bogadevelopment.heirloomrecipes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0UXMekHG3Jsb06M7LlmjmZ2jIR3Sxw38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

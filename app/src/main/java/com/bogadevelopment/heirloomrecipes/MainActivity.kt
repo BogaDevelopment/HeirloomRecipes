@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +17,9 @@ import com.bogadevelopment.heirloomrecipes.features.login.ui.LoginScreen
 import com.bogadevelopment.heirloomrecipes.features.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.features.recipes.ui.RecipesScreen
 import com.bogadevelopment.heirloomrecipes.features.register.ui.RegisterScreen
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +35,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavigationWrapper() {
+
     val navController = rememberNavController()
+    val firebaseUser: FirebaseUser? = remember { Firebase.auth.currentUser }
+    val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
     NavHost(navController = navController, startDestination = LoginScreen){
         composable<LoginScreen>{

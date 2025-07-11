@@ -2,8 +2,12 @@ package com.bogadevelopment.heirloomrecipes.features.register.ui
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
 
@@ -17,6 +21,23 @@ class RegisterViewModel : ViewModel() {
                 it.copy(registered = false, error = null)
             }
             return
+        }
+
+        viewModelScope.launch {
+            try {
+                Firebase.auth.createUserWithEmailAndPassword(
+                    _uiState.value.email,
+                    _uiState.value.password
+                )
+                _uiState.update {
+                    it.copy(registered = true)
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(registered = false, error = e.message)
+                }
+                clearFields()
+            }
         }
     }
 
