@@ -2,6 +2,8 @@ package com.bogadevelopment.heirloomrecipes.features.recipes.ui
 
 import androidx.lifecycle.ViewModel
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipesCard
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -63,6 +65,17 @@ class RecipesViewModel : ViewModel(){
             it.copy(recipes = it.recipes.filter { it.id != id })
         }
     }
+
+    fun logout() {
+        try
+        {
+            Firebase.auth.signOut()
+        }
+        catch (e : Exception) {
+            println(e.message)
+        }
+    }
+
 }
 
 data class RecipesUiState(

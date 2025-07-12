@@ -53,7 +53,7 @@ import kotlinx.serialization.Serializable
 object RecipesScreen
 
 @Composable
-fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel : RecipesViewModel = viewModel()){
+fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, onLogOut : () -> Unit ,viewModel : RecipesViewModel = viewModel()){
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -62,10 +62,10 @@ fun RecipesScreen(onItemClick : (RecipesCard) -> Unit, viewModel : RecipesViewMo
         modifier = Modifier.background(MaterialTheme.colorScheme.tertiary),
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(/*onLogout = { scope.launch {
+            DrawerContent(onLogout = { scope.launch {
             viewModel.logout()
             onLogOut()
-        }}*/)},
+        }})},
     ){
         Scaffold(
             topBar = { ToolBar("Heirloom Recipes", Icons.Default.Menu){ scope.launch { drawerState.open() }} },

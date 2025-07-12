@@ -56,7 +56,12 @@ fun NavigationWrapper() {
         }
 
         composable<RecipesScreen> {
-            RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id, it.tittle))})
+            RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id, it.tittle))},
+                onLogOut = {
+                    navController.navigate(LoginScreen) {
+                        popUpTo(RecipesScreen) { inclusive = true }
+                    }
+                })
         }
 
         composable<RecipeScreen> { backStackEntry ->
