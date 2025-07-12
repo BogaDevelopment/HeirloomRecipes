@@ -18,13 +18,6 @@ class LoginViewModel : ViewModel() {
 
     fun login(){
 
-        if(!_uiState.value.isLoginEnable) {
-            _uiState.update {
-                it.copy(loggedIn = false, error = null)
-            }
-            return
-        }
-
         viewModelScope.launch {
             try {
                 Firebase.auth.signInWithEmailAndPassword(_uiState.value.email, _uiState.value.password).await()
@@ -44,37 +37,20 @@ class LoginViewModel : ViewModel() {
         _uiState.update { state ->
             state.copy(email = email)
         }
-        verifyLogin()
     }
 
     fun onPasswordChanged(password: String) {
         _uiState.update { state ->
             state.copy(password = password)
         }
-        verifyLogin()
     }
 
-    private fun verifyLogin(){
-        if(isEmailValid() && isPasswordValid() && fieldsNotEmpty()){
-            _uiState.update {
-                it.copy(isLoginEnable = true)
-            }
-        }else{
-            _uiState.update {
-                it.copy(isLoginEnable = false )
-            }
-        }
-    }
 
     private fun clearFields(){
         _uiState.update {
             it.copy(email = "", password = "")
         }
     }
-
-    private fun isEmailValid(): Boolean = Patterns.EMAIL_ADDRESS.matcher(_uiState.value.email).matches()
-    private fun isPasswordValid(): Boolean = _uiState.value.password.length >= 8
-    private fun fieldsNotEmpty() : Boolean = _uiState.value.email.isNotEmpty() && _uiState.value.password.isNotEmpty()
 
 }
 
@@ -83,6 +59,5 @@ data class LoginUiState (
     val email : String = "",
     val password : String = "",
     val loggedIn : Boolean = false,
-    val isLoginEnable : Boolean = false,
     val error : String? = null
 )

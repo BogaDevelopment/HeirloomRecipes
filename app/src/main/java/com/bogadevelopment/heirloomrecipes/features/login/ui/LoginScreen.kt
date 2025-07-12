@@ -1,5 +1,6 @@
 package com.bogadevelopment.heirloomrecipes.features.login.ui
 
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -73,6 +76,14 @@ fun Body(
         if(uiState.loggedIn) onLoggedIn()
     }
 
+    val isLoginEnable by remember(uiState.email, uiState.password){
+        derivedStateOf{
+            val emailValid = Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches() && uiState.email.isNotBlank()
+            val passwordValid = uiState.password.length >= 8 && uiState.password.isNotBlank()
+            emailValid && passwordValid
+        }
+    }
+
     Column(modifier = modifier) {
         VerticalSpacer(40)
         CustomTittle("Welcome", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
@@ -84,7 +95,7 @@ fun Body(
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,
             MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, Modifier, { viewModel.login() }, uiState.isLoginEnable)
+        GeneralButton("Log in", 20, Modifier, { viewModel.login() }, isLoginEnable)
         VerticalSpacer(40)
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
             CustomText("Don't have an account?", MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground)

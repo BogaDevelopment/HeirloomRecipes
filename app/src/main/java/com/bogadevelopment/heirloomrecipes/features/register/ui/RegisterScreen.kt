@@ -1,5 +1,6 @@
 package com.bogadevelopment.heirloomrecipes.features.register.ui
 
+import android.util.Patterns
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -51,6 +54,16 @@ fun Content(
         if(uiState.registered) onRegister()
     }
 
+    val isRegisterEnabled by remember(uiState.name, uiState.lastName, uiState.email, uiState.password, uiState.repeatPassword){
+        derivedStateOf {
+            val nameValid = uiState.name.isNotBlank()
+            val lastNameValid = uiState.lastName.isNotBlank()
+            val emailValid = Patterns.EMAIL_ADDRESS.matcher(uiState.email).matches() && uiState.email.isNotBlank()
+            val passwordValid = uiState.password.length >= 8 && uiState.password.isNotBlank()
+            nameValid && lastNameValid && emailValid && passwordValid && uiState.password == uiState.repeatPassword
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize().padding(innerPadding)){
         Column(modifier = Modifier.align(Alignment.Center).offset(y = (-40).dp).padding(horizontal = 20.dp)){
             VerticalSpacer(40)
@@ -66,7 +79,7 @@ fun Content(
             VerticalSpacer(5)
             Field(uiState.repeatPassword, { viewModel.onRepeatPasswordChanged(it) }, "Repeat password", uiState.error != null,"password")
             VerticalSpacer(20)
-            GeneralButton("Create Account", 20, Modifier, { viewModel.register()}, uiState.isRegisterEnable)
+            GeneralButton("Create Account", 20, Modifier, { viewModel.register()}, isRegisterEnabled)
         }
     }
 
