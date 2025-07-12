@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +69,10 @@ fun Body(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.loggedIn){
+        if(uiState.loggedIn) onLoggedIn()
+    }
+
     Column(modifier = modifier) {
         VerticalSpacer(40)
         CustomTittle("Welcome", MaterialTheme.typography.titleLarge, MaterialTheme.colorScheme.onBackground)
@@ -79,7 +84,7 @@ fun Body(
         CustomText("Forgot password ?", MaterialTheme.typography.bodyMedium,
             MaterialTheme.colorScheme.onBackground , Modifier.align(Alignment.End))
         VerticalSpacer(20)
-        GeneralButton("Log in", 20, Modifier, { onLoggedIn() },uiState.isLoginEnable)
+        GeneralButton("Log in", 20, Modifier, { viewModel.login() }, uiState.isLoginEnable)
         VerticalSpacer(40)
         Row(modifier = Modifier.align(Alignment.CenterHorizontally)){
             CustomText("Don't have an account?", MaterialTheme.typography.bodyMedium, MaterialTheme.colorScheme.onBackground)

@@ -8,6 +8,7 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class RegisterViewModel : ViewModel() {
 
@@ -28,7 +29,7 @@ class RegisterViewModel : ViewModel() {
                 Firebase.auth.createUserWithEmailAndPassword(
                     _uiState.value.email,
                     _uiState.value.password
-                )
+                ).await()
                 _uiState.update {
                     it.copy(registered = true)
                 }
