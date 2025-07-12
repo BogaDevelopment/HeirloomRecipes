@@ -40,7 +40,7 @@ fun NavigationWrapper() {
     val firebaseUser: FirebaseUser? = remember { Firebase.auth.currentUser }
     val startScreen: Any = if (firebaseUser == null) LoginScreen else RecipesScreen
 
-    NavHost(navController = navController, startDestination = LoginScreen){
+    NavHost(navController = navController, startDestination = startScreen){
         composable<LoginScreen>{
             LoginScreen(onLoggedIn = {
                 navController.navigate(RecipesScreen) {
