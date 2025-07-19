@@ -19,5 +19,5 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun insert(recipe: RecipesCard) = recipeDao.insert(recipe.toEntity())
 
-    override suspend fun deleteRecipe(recipe: RecipesCard) = recipeDao.delete(recipe.toEntity())
+    override suspend fun deleteRecipeById(id: Int) = recipeDao.deleteById(id)
 }

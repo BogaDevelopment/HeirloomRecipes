@@ -22,7 +22,7 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recipe: RecipesEntity)
 
-    @Delete
-    suspend fun delete(recipe: RecipesEntity)
+    @Query("DELETE FROM recipe_table WHERE id = :id")
+    suspend fun deleteById(id: Int)
 
 }

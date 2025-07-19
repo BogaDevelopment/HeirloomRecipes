@@ -121,17 +121,17 @@ fun RecipesList(
                     CustomText(item.title, MaterialTheme.typography.headlineSmall, MaterialTheme.colorScheme.onBackground, Modifier
                         .padding(start = 10.dp)
                         .wrapContentWidth())
-                    IconButton(onClick = {viewModel.onExpandedChanged()}, modifier = Modifier.align(Alignment.CenterEnd)){
+                    IconButton(onClick = {viewModel.onExpandedChanged(item.id)}, modifier = Modifier.align(Alignment.CenterEnd)){
                         Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More actions")
                     }
                     Box(modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .offset(y = (15).dp)){
-                        DropdownMenu(expanded = uiState.expanded, onDismissRequest = { viewModel.onDialogDismiss() }, modifier = Modifier.background(
+                        DropdownMenu(expanded = uiState.expandedId == item.id, onDismissRequest = { viewModel.onExpandedDismiss() }, modifier = Modifier.background(
                             MaterialTheme.colorScheme.surface)){
                             DropdownMenuItem(
                                 text = { Text("Delete", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onBackground) },
-                                onClick = { viewModel.onDialogDismiss(); viewModel.deleteIdRecipe(item.id)})
+                                onClick = { viewModel.onExpandedDismiss(); viewModel.deleteIdRecipe(item.id)})
                         }
                     }
                 }

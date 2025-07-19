@@ -64,16 +64,18 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    fun onExpandedChanged() {
+    fun onExpandedChanged(id : Int) {
         _uiState.update { state ->
-            state.copy(expanded = !state.expanded)
+            if (state.expandedId == id) {
+                state.copy(expandedId = null) // si ya estaba abierto, lo cerramos
+            } else {
+                state.copy(expandedId = id) // abrimos el dropdown para ese id
+            }
         }
     }
 
     fun onExpandedDismiss(){
-        _uiState.update { state ->
-            state.copy(expanded = false)
-        }
+        _uiState.update { it.copy(expandedId = null) }
     }
 
     private fun addRecipe(){
@@ -89,8 +91,9 @@ class RecipesViewModel @Inject constructor(
     }
 
     private fun deleteRecipe(id : Int) {
-        _uiState.update { it ->
-            it.copy(recipes = it.recipes.filter { it.id != id })
+        viewModelScope.launch {
+            repository.deleteRecipeById(id)
+            loadRecipes()
         }
     }
 
@@ -110,5 +113,5 @@ data class RecipesUiState(
     val title : String = "",
     val show : Boolean = false,
     val recipes : List<RecipesCard> = emptyList(),
-    val expanded : Boolean = false
+    val expandedId : Int? = null
 )

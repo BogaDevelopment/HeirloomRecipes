@@ -1,6 +1,5 @@
 package com.bogadevelopment.heirloomrecipes.features.recipes.data
 
-import com.bogadevelopment.heirloomrecipes.core.database.entities.RecipesEntity
 
 interface RecipeRepository {
 
@@ -8,7 +7,7 @@ interface RecipeRepository {
     suspend fun getRecipeById(id : Int) : RecipesCard?
     suspend fun insertAll(recipes : List<RecipesCard>)
     suspend fun insert(recipe: RecipesCard)
-    suspend fun deleteRecipe(recipe : RecipesCard)
+    suspend fun deleteRecipeById(id:Int)
 
 
 }
