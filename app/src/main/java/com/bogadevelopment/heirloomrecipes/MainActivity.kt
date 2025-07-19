@@ -18,6 +18,7 @@ import com.bogadevelopment.heirloomrecipes.features.recipe.ui.RecipeScreen
 import com.bogadevelopment.heirloomrecipes.features.recipes.ui.RecipesScreen
 import com.bogadevelopment.heirloomrecipes.features.register.ui.RegisterScreen
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             CustomTheme {
@@ -59,7 +61,7 @@ fun NavigationWrapper() {
         }
 
         composable<RecipesScreen> {
-            RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id, it.tittle))},
+            RecipesScreen(onItemClick = {navController.navigate(RecipeScreen(it.id, it.title))},
                 onLogOut = {
                     navController.navigate(LoginScreen) {
                         popUpTo(RecipesScreen) { inclusive = true }
@@ -74,5 +76,6 @@ fun NavigationWrapper() {
                 recipe.tittle,
                 onBack = { navController.popBackStack() })
         }
+
     }
 }

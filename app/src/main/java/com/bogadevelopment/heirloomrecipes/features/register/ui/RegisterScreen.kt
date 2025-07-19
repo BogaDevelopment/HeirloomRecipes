@@ -25,7 +25,7 @@ import com.bogadevelopment.heirloomrecipes.core.ui.components.CustomTittle
 import com.bogadevelopment.heirloomrecipes.core.ui.components.Field
 import com.bogadevelopment.heirloomrecipes.core.ui.components.GeneralButton
 import com.bogadevelopment.heirloomrecipes.core.ui.components.VerticalSpacer
-import com.bogadevelopment.heirloomrecipes.features.recipes.ui.ToolBar
+import com.bogadevelopment.heirloomrecipes.core.ui.components.toolbar.ToolBar
 import kotlinx.serialization.Serializable
 
 @Serializable
