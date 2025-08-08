@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
-        private val repository : RecipeRepository
+        private val recipeRepo : RecipeRepository
     ): ViewModel(){
 
     private val _uiState = MutableStateFlow(RecipesUiState())
@@ -23,19 +23,6 @@ class RecipesViewModel @Inject constructor(
 
     init{
         loadRecipes()
-    }
-
-    private fun loadRecipes(){
-        viewModelScope.launch {
-            try{
-                _uiState.update {
-                    it.copy(recipes = repository.getAllRecipes())
-                }
-            }catch (e : Exception){
-                println(e.message)
-            }
-
-        }
     }
 
     fun onDialogConfirm(){
@@ -78,12 +65,22 @@ class RecipesViewModel @Inject constructor(
         _uiState.update { it.copy(expandedId = null) }
     }
 
+    fun logout() {
+        try
+        {
+            Firebase.auth.signOut()
+        }
+        catch (e : Exception) {
+            println(e.message)
+        }
+    }
+
     private fun addRecipe(){
         val title = _uiState.value.title
         if(title.isNotBlank()){
             val newRecipe = RecipesCard(0, title)
             viewModelScope.launch {
-                repository.insert(newRecipe)
+                recipeRepo.insert(newRecipe)
                 loadRecipes()
             }
         }
@@ -92,18 +89,21 @@ class RecipesViewModel @Inject constructor(
 
     private fun deleteRecipe(id : Int) {
         viewModelScope.launch {
-            repository.deleteRecipeById(id)
+            recipeRepo.deleteRecipeById(id)
             loadRecipes()
         }
     }
 
-    fun logout() {
-        try
-        {
-            Firebase.auth.signOut()
-        }
-        catch (e : Exception) {
-            println(e.message)
+    private fun loadRecipes(){
+        viewModelScope.launch {
+            try{
+                _uiState.update {
+                    it.copy(recipes = recipeRepo.getAllRecipes())
+                }
+            }catch (e : Exception){
+                println(e.message)
+            }
+
         }
     }
 

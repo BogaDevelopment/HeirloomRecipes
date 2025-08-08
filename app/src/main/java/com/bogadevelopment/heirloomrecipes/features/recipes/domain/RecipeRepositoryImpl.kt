@@ -15,9 +15,14 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getRecipeById(id: Int): RecipesCard? = recipeDao.getRecipeById(id)?.toDomain()
 
+
     override suspend fun insertAll(recipes: List<RecipesCard>) = recipeDao.insertAll(recipes.map { it.toEntity() })
 
     override suspend fun insert(recipe: RecipesCard) = recipeDao.insert(recipe.toEntity())
 
+
     override suspend fun deleteRecipeById(id: Int) = recipeDao.deleteById(id)
+
+    override suspend fun updateRecipeById(id: Int, title: String, ingredients: String, steps: String) = recipeDao.updateRecipeById(id, title, ingredients, steps)
+
 }

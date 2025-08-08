@@ -1,7 +1,6 @@
 package com.bogadevelopment.heirloomrecipes.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -10,11 +9,15 @@ import com.bogadevelopment.heirloomrecipes.core.database.entities.RecipesEntity
 @Dao
 interface RecipeDao {
 
+    // SELECT
+
     @Query("SELECT * FROM recipe_table")
     suspend fun getAllRecipes(): List<RecipesEntity>
 
     @Query("SELECT * FROM recipe_table WHERE id = :id")
     suspend fun getRecipeById(id: Int): RecipesEntity?
+
+    // INSERT
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(recipes : List<RecipesEntity>)
@@ -22,7 +25,14 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recipe: RecipesEntity)
 
+    // DELETE
+
     @Query("DELETE FROM recipe_table WHERE id = :id")
     suspend fun deleteById(id: Int)
+
+    // UPDATE
+
+    @Query("UPDATE recipe_table SET title = :title, ingredients = :ingredients, steps = :steps WHERE id = :id")
+    suspend fun updateRecipeById(id: Int, title: String, ingredients: String, steps: String)
 
 }

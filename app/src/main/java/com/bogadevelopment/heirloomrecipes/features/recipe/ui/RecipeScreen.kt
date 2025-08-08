@@ -1,5 +1,6 @@
 package com.bogadevelopment.heirloomrecipes.features.recipe.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,29 +11,41 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bogadevelopment.heirloomrecipes.core.ui.components.cards.ExpandableGeneralCard
 import com.bogadevelopment.heirloomrecipes.core.ui.components.toolbar.ToolBarActions
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecipeScreen(val id: Int, val tittle: String)
+data class RecipeScreen(val id: Int)
 
 @Composable
-fun RecipeScreen(viewModel: RecipeViewModel, tittle : String, onBack: () -> Unit) {
+fun RecipeScreen(onBack: () -> Unit, viewModel: RecipeViewModel = hiltViewModel()) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showToast by viewModel.showSaveSuccess.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    if(showToast){
+        LaunchedEffect (Unit){
+            Toast.makeText(context, "Recipe saved", Toast.LENGTH_SHORT).show()
+            viewModel.onToastShown()
+        }
+    }
 
     Scaffold(
         topBar = {
             ToolBarActions(
-                tittle,
+                uiState.title,
                 Icons.AutoMirrored.Filled.ArrowBack,
                 { onBack() },
-                onAction = {/*save*/}
+                onAction = { viewModel.onSaveRecipe() }
             )
         },
     ) { innerPadding ->
