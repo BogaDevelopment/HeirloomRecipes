@@ -11,11 +11,13 @@ interface RecipeDao {
 
     // SELECT
 
-    @Query("SELECT * FROM recipe_table")
-    suspend fun getAllRecipes(): List<RecipesEntity>
 
-    @Query("SELECT * FROM recipe_table WHERE id = :id")
-    suspend fun getRecipeById(id: Int): RecipesEntity?
+    @Query("SELECT * FROM recipe_table WHERE ownerProfileId = :profileId")
+    suspend fun getRecipesForProfile(profileId: Int): List<RecipesEntity>
+
+    @Query("SELECT * FROM recipe_table WHERE id = :id AND ownerProfileId = :profileId")
+    suspend fun getRecipeByIdForProfile(id: Int, profileId: Int): RecipesEntity?
+
 
     // INSERT
 
@@ -27,12 +29,22 @@ interface RecipeDao {
 
     // DELETE
 
-    @Query("DELETE FROM recipe_table WHERE id = :id")
-    suspend fun deleteById(id: Int)
+    @Query("DELETE FROM recipe_table WHERE id = :id AND ownerProfileId = :profileId")
+    suspend fun deleteRecipeById(id: Int, profileId: Int)
 
     // UPDATE
 
-    @Query("UPDATE recipe_table SET title = :title, ingredients = :ingredients, steps = :steps WHERE id = :id")
-    suspend fun updateRecipeById(id: Int, title: String, ingredients: String, steps: String)
+    @Query("""
+        UPDATE recipe_table 
+        SET title = :title, ingredients = :ingredients, steps = :steps 
+        WHERE id = :id AND ownerProfileId = :profileId
+    """)
+    suspend fun updateRecipeById(
+        id: Int,
+        profileId: Int,
+        title: String,
+        ingredients: String,
+        steps: String
+    )
 
 }

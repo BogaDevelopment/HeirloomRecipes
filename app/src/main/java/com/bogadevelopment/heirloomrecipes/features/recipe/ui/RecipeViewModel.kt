@@ -4,6 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepository
+import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileRepository
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +15,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RecipeViewModel @Inject constructor(savedStateHandle: SavedStateHandle, private val recipeRepo: RecipeRepository) :
+class RecipeViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val recipeRepo: RecipeRepository,
+    private val profileRepo: ProfileRepository
+) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow(RecipeUiState())
@@ -23,11 +30,26 @@ class RecipeViewModel @Inject constructor(savedStateHandle: SavedStateHandle, pr
     private val _showSaveSuccess = MutableStateFlow(false)  // Variable to control the Toast
     val showSaveSuccess: StateFlow<Boolean> = _showSaveSuccess
 
+    private var currentProfileId: Int? = null
 
-    init{
-        loadRecipe()
+    init {
+        loadCurrentProfile()
     }
 
+    private fun loadCurrentProfile() {
+        viewModelScope.launch {
+            try {
+                val firebaseUid = Firebase.auth.currentUser?.uid
+                if (firebaseUid != null) {
+                    val profile = profileRepo.getProfileByFirebaseUid(firebaseUid)
+                    currentProfileId = profile?.id
+                    loadRecipe()
+                }
+            } catch (e: Exception) {
+                println("Error cargando perfil: ${e.message}")
+            }
+        }
+    }
 
     fun onExpandedChanged(type: String) {
         _uiState.update { state ->
@@ -51,9 +73,16 @@ class RecipeViewModel @Inject constructor(savedStateHandle: SavedStateHandle, pr
         }
     }
 
-    fun onSaveRecipe(){
+    fun onSaveRecipe() {
+        val profileId = currentProfileId ?: return
         viewModelScope.launch {
-            recipeRepo.updateRecipeById(id, _uiState.value.title, _uiState.value.ingredients, _uiState.value.steps)
+            recipeRepo.updateRecipeById(
+                id = id,
+                profileId = profileId,
+                title = _uiState.value.title,
+                ingredients = _uiState.value.ingredients,
+                steps = _uiState.value.steps
+            )
             _showSaveSuccess.value = true  // Save success
         }
     }
@@ -63,9 +92,10 @@ class RecipeViewModel @Inject constructor(savedStateHandle: SavedStateHandle, pr
     }
 
     private fun loadRecipe() {
+        val profileId = currentProfileId ?: return
         viewModelScope.launch {
-            val recipe = recipeRepo.getRecipeById(id)
-            if (recipe != null) {
+            val recipe = recipeRepo.getRecipeById(id, profileId)
+            recipe?.let {
                 _uiState.update {
                     it.copy(
                         title = recipe.title,

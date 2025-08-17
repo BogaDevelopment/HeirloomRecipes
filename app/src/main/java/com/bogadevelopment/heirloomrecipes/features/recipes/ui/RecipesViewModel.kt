@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipesCard
+import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,14 +16,32 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
-        private val recipeRepo : RecipeRepository
+        private val recipeRepo : RecipeRepository,
+        private val profileRepo: ProfileRepository
     ): ViewModel(){
 
     private val _uiState = MutableStateFlow(RecipesUiState())
     val uiState : StateFlow<RecipesUiState> = _uiState
 
+    private var currentProfileId: Int? = null
+
     init{
-        loadRecipes()
+        loadCurrentProfile()
+    }
+
+    private fun loadCurrentProfile() {
+        viewModelScope.launch {
+            try {
+                val firebaseUid = Firebase.auth.currentUser?.uid
+                if (firebaseUid != null) {
+                    val profile = profileRepo.getProfileByFirebaseUid(firebaseUid)
+                    currentProfileId = profile?.id
+                    loadRecipes()
+                }
+            } catch (e: Exception) {
+                println("Error cargando perfil: ${e.message}")
+            }
+        }
     }
 
     fun onDialogConfirm(){
@@ -75,10 +94,11 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    private fun addRecipe(){
+    private fun addRecipe() {
         val title = _uiState.value.title
-        if(title.isNotBlank()){
-            val newRecipe = RecipesCard(0, title)
+        val profileId = currentProfileId
+        if (title.isNotBlank() && profileId != null) {
+            val newRecipe = RecipesCard(id = 0, profileId = profileId, title = title)
             viewModelScope.launch {
                 recipeRepo.insert(newRecipe)
                 loadRecipes()
@@ -87,27 +107,28 @@ class RecipesViewModel @Inject constructor(
         onDialogDismiss()
     }
 
-    private fun deleteRecipe(id : Int) {
+    private fun deleteRecipe(id: Int) {
+        val profileId = currentProfileId ?: return
         viewModelScope.launch {
-            recipeRepo.deleteRecipeById(id)
+            recipeRepo.deleteRecipeById(id =id, profileId = profileId)
             loadRecipes()
         }
     }
 
-    private fun loadRecipes(){
+    private fun loadRecipes() {
+        val profileId = currentProfileId ?: return
         viewModelScope.launch {
-            try{
+            try {
                 _uiState.update {
-                    it.copy(recipes = recipeRepo.getAllRecipes())
+                    it.copy(recipes = recipeRepo.getRecipesByProfileId(profileId))
                 }
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 println(e.message)
             }
-
         }
     }
-
 }
+
 
 data class RecipesUiState(
     val title : String = "",

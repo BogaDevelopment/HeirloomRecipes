@@ -1,16 +1,22 @@
 package com.bogadevelopment.heirloomrecipes.features.register.ui
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileData
+import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val profileRepository: ProfileRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: MutableStateFlow<RegisterUiState> = _uiState
@@ -19,20 +25,31 @@ class RegisterViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                Firebase.auth.createUserWithEmailAndPassword(
+                val authResult = Firebase.auth.createUserWithEmailAndPassword(
                     _uiState.value.email,
                     _uiState.value.password
                 ).await()
-                _uiState.update {
-                    it.copy(registered = true)
-                }
+
+                val firebaseUid = authResult.user?.uid ?: throw Exception("No se obtuvo el UID de Firebase")
+
+                val profile = ProfileData(
+                    name = _uiState.value.name,
+                    lastName = _uiState.value.lastName,
+                    email = _uiState.value.email,
+                    firebaseUid = firebaseUid
+                )
+
+                profileRepository.insertProfile(profile)
+
+                _uiState.update { it.copy(registered = true) }
+
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(registered = false, error = e.message)
-                }
+                _uiState.update { it.copy(registered = false, error = e.message) }
+                println("Error en el registro: ${e.message}")
                 clearFields()
             }
         }
+
     }
 
     fun onNameChanged(name: String) {
