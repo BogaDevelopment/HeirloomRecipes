@@ -1,17 +1,19 @@
 package com.bogadevelopment.heirloomrecipes.features.login.ui
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState : StateFlow<LoginUiState> = _uiState
@@ -19,12 +21,12 @@ class LoginViewModel : ViewModel() {
     fun login(){
 
         viewModelScope.launch {
-            try {
-                Firebase.auth.signInWithEmailAndPassword(_uiState.value.email, _uiState.value.password).await()
+            val result = authRepository.login(uiState.value.email, uiState.value.password)
+            result.onSuccess {
                 _uiState.update {
-                    it.copy(loggedIn = true)
+                    it.copy(loggedIn = true, error = null)
                 }
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 _uiState.update {
                     it.copy(loggedIn = false, error = e.message)
                 }

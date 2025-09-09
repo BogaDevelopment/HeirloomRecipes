@@ -2,6 +2,7 @@ package com.bogadevelopment.heirloomrecipes.features.recipes.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipesCard
 import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileRepository
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
         private val recipeRepo : RecipeRepository,
-        private val profileRepo: ProfileRepository
+        private val profileRepo: ProfileRepository,
+        private val authRepository: AuthRepository
     ): ViewModel(){
 
     private val _uiState = MutableStateFlow(RecipesUiState())
@@ -32,11 +34,16 @@ class RecipesViewModel @Inject constructor(
     private fun loadCurrentProfile() {
         viewModelScope.launch {
             try {
-                val firebaseUid = Firebase.auth.currentUser?.uid
-                if (firebaseUid != null) {
-                    val profile = profileRepo.getProfileByFirebaseUid(firebaseUid)
-                    currentProfileId = profile?.id
-                    loadRecipes()
+                val firebaseUid = authRepository.currentUser
+                firebaseUid.collect{ profileData ->
+                    if (profileData != null) {
+                        val profile = profileRepo.getProfileByFirebaseUid(profileData.firebaseUid)
+                        currentProfileId = profile?.id
+                        loadRecipes()
+                    } else {
+                        currentProfileId = null
+                        _uiState.update { it.copy(recipes = emptyList()) }
+                    }
                 }
             } catch (e: Exception) {
                 println("Error cargando perfil: ${e.message}")
@@ -85,12 +92,13 @@ class RecipesViewModel @Inject constructor(
     }
 
     fun logout() {
-        try
-        {
-            Firebase.auth.signOut()
-        }
-        catch (e : Exception) {
-            println(e.message)
+        viewModelScope.launch {
+            try {
+                authRepository.logout()
+                _uiState.update { it.copy(recipes = emptyList()) }
+            } catch (e: Exception) {
+                println("Error al cerrar sesión: ${e.message}")
+            }
         }
     }
 

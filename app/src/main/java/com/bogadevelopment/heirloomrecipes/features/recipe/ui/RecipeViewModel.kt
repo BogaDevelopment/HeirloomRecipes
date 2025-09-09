@@ -3,6 +3,7 @@ package com.bogadevelopment.heirloomrecipes.features.recipe.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.features.register.data.ProfileRepository
 import com.google.firebase.Firebase
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class RecipeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val recipeRepo: RecipeRepository,
-    private val profileRepo: ProfileRepository
+    private val profileRepo: ProfileRepository,
+    private val authRepository: AuthRepository
 ) :
     ViewModel() {
 
@@ -39,12 +41,17 @@ class RecipeViewModel @Inject constructor(
     private fun loadCurrentProfile() {
         viewModelScope.launch {
             try {
-                val firebaseUid = Firebase.auth.currentUser?.uid
-                if (firebaseUid != null) {
-                    val profile = profileRepo.getProfileByFirebaseUid(firebaseUid)
-                    currentProfileId = profile?.id
-                    loadRecipe()
+                val firebaseUid = authRepository.currentUser
+                firebaseUid.collect { profileData ->
+                    if (profileData != null) {
+                        val profile = profileRepo.getProfileByFirebaseUid(profileData.toString())
+                        currentProfileId = profile?.id
+                        loadRecipe()
+                    }else{
+                        currentProfileId = null
+                    }
                 }
+
             } catch (e: Exception) {
                 println("Error cargando perfil: ${e.message}")
             }
