@@ -1,16 +1,18 @@
 package com.bogadevelopment.heirloomrecipes.features.register.ui
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: MutableStateFlow<RegisterUiState> = _uiState
@@ -19,18 +21,20 @@ class RegisterViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                Firebase.auth.createUserWithEmailAndPassword(
-                    _uiState.value.email,
-                    _uiState.value.password
-                ).await()
-                _uiState.update {
-                    it.copy(registered = true)
+                val userSession = authRepository.register(_uiState.value.email, _uiState.value.password)
+
+                if (userSession != null) {
+                    _uiState.update { it.copy(registered = true, error = null) }
+                } else {
+                    _uiState.update { it.copy(registered = false, error = "Error al registrar usuario") }
                 }
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(registered = false, error = e.message)
+                val msg = when (e.message) {
+                    "The email address is already in use by another account." ->
+                        "El email ya está registrado."
+                    else -> e.message ?: "Error desconocido."
                 }
-                clearFields()
+                _uiState.update { it.copy(registered = false, error = msg) }
             }
         }
     }

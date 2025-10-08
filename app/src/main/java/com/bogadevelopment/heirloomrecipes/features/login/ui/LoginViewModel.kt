@@ -1,17 +1,19 @@
 package com.bogadevelopment.heirloomrecipes.features.login.ui
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState : StateFlow<LoginUiState> = _uiState
@@ -20,14 +22,15 @@ class LoginViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                Firebase.auth.signInWithEmailAndPassword(_uiState.value.email, _uiState.value.password).await()
-                _uiState.update {
-                    it.copy(loggedIn = true)
+                val userSession = authRepository.login(_uiState.value.email, _uiState.value.password)
+                if (userSession != null) {
+                    _uiState.update { it.copy(loggedIn = true, error = null) }
+                } else {
+                    _uiState.update { it.copy(loggedIn = false, error = "Usuario o contraseña incorrectos") }
+                    clearFields()
                 }
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(loggedIn = false, error = e.message)
-                }
+            _uiState.update { it.copy(loggedIn = false, error = e.message ?: "Error desconocido") }
                 clearFields()
             }
         }

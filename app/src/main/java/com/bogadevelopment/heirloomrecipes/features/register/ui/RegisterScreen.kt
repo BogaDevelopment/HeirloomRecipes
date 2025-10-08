@@ -19,8 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bogadevelopment.heirloomrecipes.core.ui.components.CustomTittle
 import com.bogadevelopment.heirloomrecipes.core.ui.components.Field
 import com.bogadevelopment.heirloomrecipes.core.ui.components.GeneralButton
@@ -32,7 +32,7 @@ import kotlinx.serialization.Serializable
 object RegisterScreen
 
 @Composable
-fun RegisterScreen(onRegister : () -> Unit, onBack : () -> Unit, viewModel: RegisterViewModel = viewModel()){
+fun RegisterScreen(onRegister : () -> Unit, onBack : () -> Unit, viewModel: RegisterViewModel = hiltViewModel()){
 
     Scaffold(
         topBar = { ToolBar("Heirloom Recipes", Icons.AutoMirrored.Filled.ArrowBack) {onBack()} },

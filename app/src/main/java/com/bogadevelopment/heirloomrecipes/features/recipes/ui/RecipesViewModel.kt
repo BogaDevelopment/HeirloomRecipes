@@ -2,12 +2,11 @@ package com.bogadevelopment.heirloomrecipes.features.recipes.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepository
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipesCard
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +14,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
-        private val recipeRepo : RecipeRepository
+        private val recipeRepo : RecipeRepository,
+        private val authRepository: AuthRepository
     ): ViewModel(){
 
     private val _uiState = MutableStateFlow(RecipesUiState())
@@ -66,11 +66,9 @@ class RecipesViewModel @Inject constructor(
     }
 
     fun logout() {
-        try
-        {
-            Firebase.auth.signOut()
-        }
-        catch (e : Exception) {
+        try {
+            authRepository.logout()
+        } catch (e : Exception) {
             println(e.message)
         }
     }
