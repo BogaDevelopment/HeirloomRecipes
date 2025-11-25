@@ -17,6 +17,9 @@ interface RecipeDao {
     @Query("SELECT * FROM recipe_table WHERE id = :id")
     suspend fun getRecipeById(id: Int): RecipesEntity?
 
+    @Query("SELECT * FROM recipe_table WHERE user_uid = :uid")
+    suspend fun getRecipesByUser(uid: String): List<RecipesEntity>
+
     // INSERT
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -5,7 +5,7 @@ import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipeRepositor
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.RecipesCard
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.toDomain
 import com.bogadevelopment.heirloomrecipes.features.recipes.data.toEntity
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDao : RecipeDao
@@ -15,6 +15,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getRecipeById(id: Int): RecipesCard? = recipeDao.getRecipeById(id)?.toDomain()
 
+    override suspend fun getRecipesByUser(uid: String): List<RecipesCard> = recipeDao.getRecipesByUser(uid).map { it.toDomain() }
 
     override suspend fun insertAll(recipes: List<RecipesCard>) = recipeDao.insertAll(recipes.map { it.toEntity() })
 

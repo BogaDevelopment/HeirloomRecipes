@@ -6,6 +6,8 @@ interface RecipeRepository {
     suspend fun getAllRecipes() : List<RecipesCard>
     suspend fun getRecipeById(id : Int) : RecipesCard?
 
+    suspend fun getRecipesByUser(uid: String): List<RecipesCard>
+
     suspend fun insertAll(recipes : List<RecipesCard>)
     suspend fun insert(recipe: RecipesCard)
 

@@ -1,5 +1,6 @@
 package com.bogadevelopment.heirloomrecipes.features.recipes.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bogadevelopment.heirloomrecipes.core.auth.AuthRepository
@@ -73,17 +74,44 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    private fun addRecipe(){
+
+    private fun addRecipe() {
         val title = _uiState.value.title
-        if(title.isNotBlank()){
-            val newRecipe = RecipesCard(0, title)
+        if (title.isNotBlank()) {
             viewModelScope.launch {
-                recipeRepo.insert(newRecipe)
-                loadRecipes()
+                try {
+                    // Get the current user from the authrepository
+                    val user = authRepository.getCurrentUser()
+
+                    if (user == null) {
+                        Log.e("RECIPES", "No hay usuario logueado, no se puede agregar receta")
+                        return@launch
+                    }
+
+                    // Create a new recipe with the user's UID
+                    val newRecipe = RecipesCard(
+                        id = 0,
+                        title = title,
+                        ingredients = "",
+                        steps = "",
+                        userUid = user.uid
+                    )
+
+                    // Insert in the Local db
+                    recipeRepo.insert(newRecipe)
+
+                    // refresh list
+                    loadRecipes()
+
+                } catch (e: Exception) {
+                    Log.e("RECIPES", "❌ Error al agregar receta: ${e.message}")
+                }
             }
         }
+
         onDialogDismiss()
     }
+
 
     private fun deleteRecipe(id : Int) {
         viewModelScope.launch {
@@ -92,16 +120,19 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    private fun loadRecipes(){
+    private fun loadRecipes() {
         viewModelScope.launch {
-            try{
-                _uiState.update {
-                    it.copy(recipes = recipeRepo.getAllRecipes())
+            try {
+                val user = authRepository.getCurrentUser()
+                if (user != null) {
+                    val userRecipes = recipeRepo.getRecipesByUser(user.uid)
+                    _uiState.update { it.copy(recipes = userRecipes) }
+                } else {
+                    _uiState.update { it.copy(recipes = emptyList()) }
                 }
-            }catch (e : Exception){
-                println(e.message)
+            } catch (e: Exception) {
+                println("❌ Error al cargar recetas: ${e.message}")
             }
-
         }
     }
 

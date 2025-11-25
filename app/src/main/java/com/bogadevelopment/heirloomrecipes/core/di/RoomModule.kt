@@ -20,11 +20,15 @@ object RoomModule {
     @Provides
     fun provideRoom(@ApplicationContext context: Context) = Room.databaseBuilder(
         context, RecipesDataBase::class.java, DATABASE_NAME
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     @Singleton
     @Provides
     fun provideRecipeDao(db: RecipesDataBase) = db.getRecipeDao()
+
+    @Singleton
+    @Provides
+    fun provideProfileDao(db: RecipesDataBase) = db.getProfileDao()
 
 
 }

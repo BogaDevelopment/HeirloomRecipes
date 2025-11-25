@@ -22,7 +22,7 @@ object AuthModule {
     @Singleton
     fun provideFirebaseAuthDataSource(
         firebaseAuthService: FirebaseAuthService
-    ): FirebaseAuthDataSource = FirebaseAuthDataSource(firebaseAuthService)
+    ): FirebaseAuthDataSource = FirebaseAuthDataSource()
 
     @Provides
     @Singleton

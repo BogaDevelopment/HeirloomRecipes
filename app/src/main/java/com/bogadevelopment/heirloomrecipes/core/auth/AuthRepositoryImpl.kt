@@ -20,4 +20,7 @@ class AuthRepositoryImpl(
     }
 
     override fun logout() = firebaseAuthDataSource.logout()
+
+    // 🔹 Nuevo: flujo que emite cambios de autenticación (Firebase notifica)
+    override fun observeAuthState() = firebaseAuthDataSource.observeAuthState()
 }
